@@ -17,7 +17,7 @@ const tobitaAdvisorAvatar = '/images/staff_lounge_support_1789108549559.jpg';
 // 空白（''）または初期値（'https://lin.ee/your_custom_line_id_here'）の場合は、
 // 自動的にページ下部の「お悩み相談フォーム」にスクロールする親切設計になります。
 // ==========================================
-export const LINE_OFFICIAL_URL = 'https://lin.ee/phFZoea';
+export const LINE_OFFICIAL_URL = 'https://lin.ee/9qUXO3K';
 
 export const HERO_IMAGE_URL = tobitaDreamHeroBanner;
 export const CONSULTANT_AVATAR_URL = tobitaAdvisorAvatar;

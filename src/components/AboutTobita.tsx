@@ -63,65 +63,6 @@ export default function AboutTobita() {
           <div className="h-1 w-16 bg-gradient-to-r from-secondary to-rose-300 mx-auto rounded-full mt-4" />
         </div>
 
-        {/* Visual Showcase: Atmosphere & Privacy Protection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="group relative h-56 sm:h-64 md:h-72 rounded-3xl overflow-hidden border border-rose-100 shadow-sm"
-          >
-            <img
-              src="/images/ryotei_entrance_lantern_1789108525834.jpg"
-              alt="飛田新地の格式ある料亭建築"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-            <div className="absolute top-4 left-4 bg-black/40 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full">
-              伝統と格式の料亭街
-            </div>
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <h3 className="font-display font-bold text-base sm:text-lg mb-1">
-                大正時代から続く歴史と情緒ある建築
-              </h3>
-              <p className="text-xs text-white/80 line-clamp-2 leading-relaxed">
-                風営法上の扱いは料理店（料亭）。趣のあるお座敷で、お茶やお菓子をお出ししながら安心してお仕事していただけます。
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="group relative h-56 sm:h-64 md:h-72 rounded-3xl overflow-hidden border border-rose-100 shadow-sm"
-          >
-            <img
-              src="/images/col_street_lanterns_1789107524691.jpg"
-              alt="写真撮影・ネット宣伝完全禁止の安全な通り"
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-            <div className="absolute top-4 left-4 bg-secondary/80 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full">
-              写真・動画撮影は全面禁止
-            </div>
-            <div className="absolute bottom-4 left-4 right-4 text-white">
-              <h3 className="font-display font-bold text-base sm:text-lg mb-1">
-                組合ルールで守られる鉄壁のプライバシー
-              </h3>
-              <p className="text-xs text-white/80 line-clamp-2 leading-relaxed">
-                エリア内での撮影やネット掲載・写メ日記は一切禁止。顔バレ・身バレのリスクを極限まで抑えた安全な環境です。
-              </p>
-            </div>
-          </motion.div>
-        </div>
-
         {/* Feature Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {points.map((pt, idx) => (

@@ -13,10 +13,10 @@ export default function JobRequirements() {
       content: (
         <div className="space-y-2 text-xs sm:text-sm text-on-surface-variant leading-relaxed">
           <div>
-            <span className="font-extrabold text-on-surface text-base">満20歳以上</span>
-            <span className="ml-2 text-xs text-gray-500 font-medium">（20代〜30代前半中心）</span>
+            <span className="font-extrabold text-on-surface text-base">満18歳以上</span>
+            <span className="ml-2 text-xs text-gray-500 font-medium">（20代中心）</span>
             <div className="mt-1 bg-rose-50 border border-rose-200/80 rounded-xl p-2.5 text-xs text-rose-700 font-bold">
-              ⚠️ 飛田新地料理組合の厳格な規定により、18歳・19歳および現役高校生は絶対に応募・就労できません。
+              ⚠️ 飛田新地料理組合の厳格な規定により、現役高校生は絶対に応募・就労できません。
             </div>
           </div>
           <p className="text-xs sm:text-sm">

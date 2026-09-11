@@ -72,7 +72,7 @@ export interface SiteContent {
   };
 }
 
-export const SITE_CONTENT_VERSION = '20260911_direct_recruitment_v5';
+export const SITE_CONTENT_VERSION = '20260911_direct_recruitment_v6';
 export const DEFAULT_SITE_CONTENT: SiteContent = siteContentJson as any;
 
 export function getStoredSiteContent(): SiteContent {

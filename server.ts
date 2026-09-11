@@ -935,13 +935,246 @@ JSONスキーマ：
     }
   });
 
-  // Vite middleware for development
+  // Helper functions for dynamic OGP and Twitter Card meta injection
+  function escapeHtml(str: string): string {
+    if (!str) return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi-recruit.com"): string {
+    if (!imagePath) {
+      return `${domain}/images/tobita_bright_future_1789106917071.jpg`;
+    }
+    const clean = imagePath.trim();
+    if (clean.startsWith("http://") || clean.startsWith("https://")) {
+      return clean;
+    }
+    const normalizedPath = clean.startsWith("/") ? clean : `/${clean}`;
+    return `${domain}${normalizedPath}`;
+  }
+
+  function injectMetaIntoHtml(baseHtml: string, meta: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    url: string;
+    type?: "website" | "article";
+  }): string {
+    let html = baseHtml;
+    const escapedTitle = escapeHtml(meta.title);
+    const escapedDesc = escapeHtml(meta.description);
+    const escapedImage = escapeHtml(meta.imageUrl);
+    const escapedUrl = escapeHtml(meta.url);
+    const type = meta.type || "article";
+
+    // 1. Replace <title>
+    if (/<title>.*?<\/title>/i.test(html)) {
+      html = html.replace(/<title>.*?<\/title>/i, `<title>${escapedTitle}</title>`);
+    }
+
+    // 2. Replace meta name="description"
+    if (/<meta\s+name="description"\s+content=".*?"\s*\/?>/i.test(html)) {
+      html = html.replace(/<meta\s+name="description"\s+content=".*?"\s*\/?>/i, `<meta name="description" content="${escapedDesc}" />`);
+    }
+
+    // 3. Replace canonical link
+    if (/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/i.test(html)) {
+      html = html.replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/i, `<link rel="canonical" href="${escapedUrl}" />`);
+    }
+
+    // 4. Replace or inject og:title
+    if (/property="og:title"/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:title"\s+content=".*?"\s*\/?>/i, `<meta property="og:title" content="${escapedTitle}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:title" content="${escapedTitle}" />\n</head>`);
+    }
+
+    // 5. Replace or inject og:description
+    if (/property="og:description"/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:description"\s+content=".*?"\s*\/?>/i, `<meta property="og:description" content="${escapedDesc}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:description" content="${escapedDesc}" />\n</head>`);
+    }
+
+    // 6. Replace or inject og:image
+    if (/property="og:image"\s+content/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:image"\s+content=".*?"\s*\/?>/i, `<meta property="og:image" content="${escapedImage}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:image" content="${escapedImage}" />\n</head>`);
+    }
+
+    // 7. Replace or inject og:url
+    if (/property="og:url"/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:url"\s+content=".*?"\s*\/?>/i, `<meta property="og:url" content="${escapedUrl}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:url" content="${escapedUrl}" />\n</head>`);
+    }
+
+    // 8. Replace or inject og:type
+    if (/property="og:type"/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:type"\s+content=".*?"\s*\/?>/i, `<meta property="og:type" content="${type}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:type" content="${type}" />\n</head>`);
+    }
+
+    // 9. Replace or inject twitter:card
+    if (/name="twitter:card"/i.test(html)) {
+      html = html.replace(/<meta\s+name="twitter:card"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:card" content="summary_large_image" />`);
+    } else {
+      html = html.replace("</head>", `  <meta name="twitter:card" content="summary_large_image" />\n</head>`);
+    }
+
+    // 10. Replace or inject twitter:title
+    if (/name="twitter:title"/i.test(html)) {
+      html = html.replace(/<meta\s+name="twitter:title"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:title" content="${escapedTitle}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta name="twitter:title" content="${escapedTitle}" />\n</head>`);
+    }
+
+    // 11. Replace or inject twitter:description
+    if (/name="twitter:description"/i.test(html)) {
+      html = html.replace(/<meta\s+name="twitter:description"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:description" content="${escapedDesc}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta name="twitter:description" content="${escapedDesc}" />\n</head>`);
+    }
+
+    // 12. Replace or inject twitter:image
+    if (/name="twitter:image"/i.test(html)) {
+      html = html.replace(/<meta\s+name="twitter:image"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:image" content="${escapedImage}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta name="twitter:image" content="${escapedImage}" />\n</head>`);
+    }
+
+    return html;
+  }
+
+  const getRequestBaseUrl = (req: express.Request): string => {
+    const proto = (req.headers["x-forwarded-proto"] as string) || (req.secure ? "https" : "http");
+    const host = (req.headers["x-forwarded-host"] as string) || req.headers.host;
+    if (host && !host.includes("localhost") && !host.includes("127.0.0.1") && !host.includes("0.0.0.0")) {
+      return `${proto}://${host}`;
+    }
+    return "https://tobitashinchi-recruit.com";
+  };
+
+  let vite: any = null;
   if (!isProd) {
     const { createServer: createViteServer } = await import("vite");
-    const vite = await createViteServer({
+    vite = await createViteServer({
       server: { middlewareMode: true, allowedHosts: true, cors: true },
       appType: "spa",
     });
+  }
+
+  // Dynamic OGP rendering for /blog/:slug (X / Twitter, LINE, Facebook crawlers & direct browser visits)
+  app.get(["/blog/:slug", "/blog/:slug/"], async (req, res, next) => {
+    try {
+      const { slug } = req.params;
+      if (slug && slug.includes(".")) {
+        return next();
+      }
+
+      // Check in-memory articles first, then fallback to file
+      const allArticles = memoryArticles.length > 0 ? memoryArticles : (
+        fs.existsSync(ARTICLES_PATH) ? JSON.parse(fs.readFileSync(ARTICLES_PATH, "utf-8")) : BLOG_ARTICLES
+      );
+      const article = allArticles.find((a: any) => a.slug === slug || String(a.id) === slug);
+
+      if (!article) {
+        return next();
+      }
+
+      const baseUrl = getRequestBaseUrl(req);
+      const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseUrl);
+      const articleUrl = `${baseUrl}/blog/${article.slug}`;
+      const articleTitle = `${article.title} | 飛田ガールズ`;
+      const articleDesc = article.summary || `${article.title}についての詳しいお仕事解説記事です。`;
+
+      let baseHtml = "";
+      if (isProd) {
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      } else {
+        const indexPath = path.join(projectRootDir, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      }
+
+      if (!baseHtml) {
+        return next();
+      }
+
+      let modifiedHtml = injectMetaIntoHtml(baseHtml, {
+        title: articleTitle,
+        description: articleDesc,
+        imageUrl: fullImageUrl,
+        url: articleUrl,
+        type: "article",
+      });
+
+      if (!isProd && vite) {
+        modifiedHtml = await vite.transformIndexHtml(req.originalUrl, modifiedHtml);
+      }
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.send(modifiedHtml);
+    } catch (err) {
+      console.error("Error serving blog article with OGP:", err);
+      return next();
+    }
+  });
+
+  // Dynamic OGP rendering for /blog (list page)
+  app.get(["/blog", "/blog/"], async (req, res, next) => {
+    try {
+      const baseUrl = getRequestBaseUrl(req);
+      let baseHtml = "";
+      if (isProd) {
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      } else {
+        const indexPath = path.join(projectRootDir, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      }
+
+      if (!baseHtml) {
+        return next();
+      }
+
+      let modifiedHtml = injectMetaIntoHtml(baseHtml, {
+        title: "お仕事コラム一覧 | 飛田ガールズ【公式求人】",
+        description: "飛田新地のお仕事コラム・お役立ち情報一覧。給料システム、面接対策、身バレ防止、未経験からの働き方などを詳しく解説しています。",
+        imageUrl: `${baseUrl}/images/col_ryotei_flow_1789107427433.jpg`,
+        url: `${baseUrl}/blog`,
+        type: "website",
+      });
+
+      if (!isProd && vite) {
+        modifiedHtml = await vite.transformIndexHtml(req.originalUrl, modifiedHtml);
+      }
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.send(modifiedHtml);
+    } catch (err) {
+      console.error("Error serving blog list with OGP:", err);
+      return next();
+    }
+  });
+
+  // Vite middleware for development
+  if (!isProd) {
     app.use(vite.middlewares);
   } else {
     // Serve static assets from dist

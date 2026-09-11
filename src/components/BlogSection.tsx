@@ -61,20 +61,66 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
     return articles.find(a => a.slug === selectedSlug) || null;
   }, [articles, selectedSlug]);
 
-  // Dynamically update document title and description for SEO based on the active article
+  // Dynamically update document title and OGP/Twitter meta tags based on the active article
   useEffect(() => {
+    if (typeof document === 'undefined') return;
+
     if (currentArticle) {
-      document.title = `${currentArticle.title} | 飛田ガールズ`;
+      const pageTitle = `${currentArticle.title} | 飛田ガールズ`;
+      document.title = pageTitle;
+
       const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute('content', currentArticle.summary);
-      }
+      if (metaDesc) metaDesc.setAttribute('content', currentArticle.summary);
+
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', currentArticle.summary);
+
+      const eyeCatch = getValidArticleEyeCatch(currentArticle);
+      const origin = typeof window !== 'undefined' ? (window.location.hostname.includes('localhost') ? 'https://tobitashinchi-recruit.com' : window.location.origin) : 'https://tobitashinchi-recruit.com';
+      const fullImageUrl = eyeCatch.startsWith('http') ? eyeCatch : `${origin}${eyeCatch.startsWith('/') ? '' : '/'}${eyeCatch}`;
+
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage) ogImage.setAttribute('content', fullImageUrl);
+
+      const ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', `${origin}/blog/${currentArticle.slug}`);
+
+      const twTitle = document.querySelector('meta[name="twitter:title"]');
+      if (twTitle) twTitle.setAttribute('content', pageTitle);
+
+      const twDesc = document.querySelector('meta[name="twitter:description"]');
+      if (twDesc) twDesc.setAttribute('content', currentArticle.summary);
+
+      const twImage = document.querySelector('meta[name="twitter:image"]');
+      if (twImage) twImage.setAttribute('content', fullImageUrl);
+
+      const twCard = document.querySelector('meta[name="twitter:card"]');
+      if (twCard) twCard.setAttribute('content', 'summary_large_image');
     } else {
-      document.title = '飛田新地求人、飛田新地バイトなら【飛田ガールズ】女の子のためのサイト・高収入募集';
+      const defaultTitle = '飛田新地求人、飛田新地バイトなら【飛田ガールズ】女の子のためのサイト・高収入募集';
+      const defaultDesc = '【飛田新地求人の公式窓口】飛田新地で女の子の求人・お仕事なら「飛田ガールズ」。未経験から高収入（日給3万〜8万円）を稼げる料亭直営グループ公式採用。仲介料ゼロ・全額日払い手渡しで安心安全に働けます。24時間いつでもお気軽にご相談・ご応募いただけます。';
+      document.title = defaultTitle;
+
       const metaDesc = document.querySelector('meta[name="description"]');
-      if (metaDesc) {
-        metaDesc.setAttribute('content', '【飛田新地求人の公式窓口】飛田新地で女の子の求人・お仕事なら「飛田ガールズ」。未経験から高収入（日給3万〜8万円）を稼げる料亭直営グループ公式採用。仲介料ゼロ・全額日払い手渡しで安心安全に働けます。24時間いつでもお気軽にご相談・ご応募いただけます。');
-      }
+      if (metaDesc) metaDesc.setAttribute('content', defaultDesc);
+
+      const ogTitle = document.querySelector('meta[property="og:title"]');
+      if (ogTitle) ogTitle.setAttribute('content', defaultTitle);
+
+      const ogDesc = document.querySelector('meta[property="og:description"]');
+      if (ogDesc) ogDesc.setAttribute('content', defaultDesc);
+
+      const origin = typeof window !== 'undefined' ? (window.location.hostname.includes('localhost') ? 'https://tobitashinchi-recruit.com' : window.location.origin) : 'https://tobitashinchi-recruit.com';
+      const defaultImage = `${origin}/images/tobita_bright_future_1789106917071.jpg`;
+
+      const ogImage = document.querySelector('meta[property="og:image"]');
+      if (ogImage) ogImage.setAttribute('content', defaultImage);
+
+      const twImage = document.querySelector('meta[name="twitter:image"]');
+      if (twImage) twImage.setAttribute('content', defaultImage);
     }
   }, [currentArticle]);
 

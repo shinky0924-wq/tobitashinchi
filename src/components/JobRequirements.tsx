@@ -28,6 +28,75 @@ export default function JobRequirements() {
       )
     },
     {
+      label: '採用基準',
+      content: (
+        <div className="space-y-3 text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+          <div className="bg-rose-50/70 border border-rose-200/70 rounded-xl p-3">
+            <h4 className="font-bold text-secondary text-xs sm:text-sm mb-1">
+              通り（エリア）別の採用スペック・年齢基準
+            </h4>
+            <p className="text-xs text-on-surface-variant leading-relaxed">
+              店頭でお客様が直接女の子を見て選ぶシステムのため、全般的に高い容姿レベルが求められますが、通りによって求められる水準が異なります。
+            </p>
+          </div>
+
+          <div className="space-y-2.5">
+            {/* メイン通り */}
+            <div className="bg-surface-container-low/60 border border-rose-100/80 rounded-xl p-3">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                <span className="font-bold text-on-surface text-sm flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-secondary inline-block" />
+                  メイン通り
+                  <span className="text-[11px] font-bold text-secondary bg-rose-50 border border-rose-200/80 px-2 py-0.5 rounded-full">最激戦区</span>
+                </span>
+                <span className="text-xs font-semibold text-rose-700 bg-rose-100/60 px-2 py-0.5 rounded-md">
+                  年齢層：20代前半〜後半中心
+                </span>
+              </div>
+              <p className="text-xs text-on-surface-variant leading-relaxed">
+                <strong className="text-on-surface font-semibold">スペック：</strong>高級キャバクラや高級風俗店で即採用されるレベルの極めて高いルックス・スタイルが必要。
+              </p>
+            </div>
+
+            {/* 青春通り */}
+            <div className="bg-surface-container-low/60 border border-rose-100/80 rounded-xl p-3">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                <span className="font-bold text-on-surface text-sm flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-pink-400 inline-block" />
+                  青春通り
+                  <span className="text-[11px] font-bold text-pink-600 bg-pink-50 border border-pink-200/80 px-2 py-0.5 rounded-full">準一等地</span>
+                </span>
+                <span className="text-xs font-semibold text-pink-700 bg-pink-100/60 px-2 py-0.5 rounded-md">
+                  年齢層：20代前半〜後半中心
+                </span>
+              </div>
+              <p className="text-xs text-on-surface-variant leading-relaxed">
+                <strong className="text-on-surface font-semibold">スペック：</strong>メイン通りに次ぐ高スペックが求められるが、未経験者も馴染みやすい環境。
+              </p>
+            </div>
+
+            {/* 裏通り */}
+            <div className="bg-surface-container-low/60 border border-rose-100/80 rounded-xl p-3">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
+                <span className="font-bold text-on-surface text-sm flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+                  裏通り
+                  <span className="text-[11px] font-medium text-gray-500">（妖怪通り・人妻通り・百番通り等）</span>
+                </span>
+                <span className="text-xs font-semibold text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded-md">
+                  年齢層：30代〜40代以上中心
+                </span>
+              </div>
+              <p className="text-xs text-on-surface-variant leading-relaxed">
+                <strong className="text-on-surface font-semibold">スペック：</strong>一般的な風俗店やキャバクラレベルの基準。ぽっちゃり体系や容姿に自信がない女性でも需要があるエリア。<br />
+                <span className="text-gray-500">※実年齢よりも「見かけ年齢」や落ち着いた雰囲気が評価されます。</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
       label: '必要書類・持ち物',
       content: (
         <div className="space-y-2 text-xs sm:text-sm text-on-surface-variant leading-relaxed">

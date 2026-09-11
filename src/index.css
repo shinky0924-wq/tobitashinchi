@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
+
+  --color-primary: #ec4899;
+  --color-primary-container: #f43f5e;
+  --color-secondary: #d2547b;
+  --color-secondary-container: #ff9ebb;
+  --color-on-secondary-container: #761341;
+  --color-surface: #fffafb;
+  --color-surface-container: #fff0f3;
+  --color-surface-container-low: #fff8f9;
+  --color-on-surface: #2c1a1e;
+  --color-on-surface-variant: #5e474c;
+  --color-outline-variant: #f3dce2;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  scroll-behavior: smooth;
+}
+
+/* Custom background pattern for added visual polish */
+.hero-pattern {
+  background-image: radial-gradient(#fd80ac18 2px, transparent 2px);
+  background-size: 30px 30px;
+}
+

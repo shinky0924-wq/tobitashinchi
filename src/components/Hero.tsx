@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { HERO_IMAGE_URL, LINE_OFFICIAL_URL } from '../data';
 import LucideIcon from './LucideIcon';
@@ -19,33 +19,11 @@ interface HeroProps {
   onArticleClick?: (slug: string) => void;
 }
 
-/** 全記事の中から重複なくランダムに指定件数をシャッフル選出 */
-function getRandomArticles(allArticles: BlogArticle[], count = 5): BlogArticle[] {
-  if (!allArticles || allArticles.length === 0) return [];
-  const valid = allArticles.filter(a => a && a.title && a.slug);
-  const pool = [...valid];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, Math.min(count, pool.length));
-}
-
 export default function Hero({ content, onCtaclick, onBlogClick, articles, onArticleClick }: HeroProps) {
-  const [recommendedArticles, setRecommendedArticles] = useState<BlogArticle[]>([]);
-  const [isShuffling, setIsShuffling] = useState(false);
-
-  const shuffleArticles = useCallback(() => {
-    if (articles && articles.length > 0) {
-      setIsShuffling(true);
-      setRecommendedArticles(getRandomArticles(articles, 5));
-      setTimeout(() => setIsShuffling(false), 300);
-    }
+  const recommendedArticles = useMemo(() => {
+    if (!articles || articles.length === 0) return [];
+    return articles.slice(0, 5);
   }, [articles]);
-
-  useEffect(() => {
-    shuffleArticles();
-  }, [shuffleArticles]);
 
   return (
     <section className="relative pt-24 md:pt-32 pb-16 md:pb-24 overflow-hidden hero-pattern bg-radial from-rose-50/20 via-transparent to-transparent">
@@ -163,21 +141,11 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
                 <span>PICK UP</span>
               </div>
               
-              <div className="flex items-center justify-between border-b border-rose-100 pb-3 mb-4">
+              <div className="border-b border-rose-100 pb-3 mb-4">
                 <h3 className="font-sans font-extrabold text-sm md:text-base text-secondary flex items-center gap-2">
                   <span className="bg-secondary text-white text-[9px] tracking-wider px-2 py-0.5 rounded-md font-black">RECOMMEND</span>
                   <span className="bg-gradient-to-r from-secondary to-[#a13762] bg-clip-text text-transparent font-black">人気のお仕事コラム（おすすめ5選）</span>
                 </h3>
-                <button
-                  type="button"
-                  onClick={shuffleArticles}
-                  className="flex items-center gap-1.5 text-[11px] font-bold text-secondary hover:text-[#a13762] bg-rose-50/80 hover:bg-rose-100 border border-rose-200/80 px-2.5 py-1 rounded-full transition-all cursor-pointer shadow-xs active:scale-95"
-                  title="他の記事をランダム表示"
-                  id="hero-shuffle-btn"
-                >
-                  <LucideIcon name="Shuffle" size={12} className={`text-secondary transition-transform duration-300 ${isShuffling ? 'rotate-180' : ''}`} />
-                  <span className="hidden sm:inline">シャッフル</span>
-                </button>
               </div>
               
               <div className="flex flex-col gap-2.5">

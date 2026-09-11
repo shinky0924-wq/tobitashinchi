@@ -7,7 +7,7 @@ import { ConcernItem, ReasonItem, FAQItem, TestimonialItem, JobFactItem, FlowSte
 
 const tobitaCastOne = '/images/cast_avatar_one_1789108601323.jpg';
 const tobitaCastTwo = '/images/cast_avatar_two_1789108616238.jpg';
-const tobitaCastThree = '/images/tobita_bright_future_1789106917071.jpg';
+const tobitaCastThree = '/images/cast_avatar_three_1789110410676.jpg';
 const tobitaDreamHeroBanner = '/images/tobita_bright_future_1789106917071.jpg';
 const tobitaAdvisorAvatar = '/images/staff_lounge_support_1789108549559.jpg';
 

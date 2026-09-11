@@ -946,11 +946,14 @@ JSONスキーマ：
       .replace(/'/g, "&#039;");
   }
 
-  function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi-recruit.com"): string {
+  function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi.pages.dev"): string {
     if (!imagePath) {
       return `${domain}/images/tobita_bright_future_1789106917071.jpg`;
     }
-    const clean = imagePath.trim();
+    let clean = imagePath.trim();
+    if (clean.includes("tobitashinchi-recruit.com")) {
+      clean = clean.replace(/https?:\/\/tobitashinchi-recruit\.com/g, domain);
+    }
     if (clean.startsWith("http://") || clean.startsWith("https://")) {
       return clean;
     }
@@ -1059,7 +1062,7 @@ JSONスキーマ：
     if (host && !host.includes("localhost") && !host.includes("127.0.0.1") && !host.includes("0.0.0.0")) {
       return `${proto}://${host}`;
     }
-    return "https://tobitashinchi-recruit.com";
+    return "https://tobitashinchi.pages.dev";
   };
 
   let vite: any = null;

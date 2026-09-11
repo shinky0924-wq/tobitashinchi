@@ -51,77 +51,48 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
     html = html.replace(/<link\s+rel="canonical"\s+href=".*?"\s*\/?>/i, `<link rel="canonical" href="${escapedUrl}" />`);
   }
 
-  // 4. Replace or inject og:title
-  if (/property="og:title"/i.test(html)) {
-    html = html.replace(/<meta\s+property="og:title"\s+content=".*?"\s*\/?>/i, `<meta property="og:title" content="${escapedTitle}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta property="og:title" content="${escapedTitle}" />\n</head>`);
-  }
+  // Helper to upsert a meta tag
+  const upsertMeta = (propOrName: 'property' | 'name', attrValue: string, content: string) => {
+    const regex = new RegExp(`<meta\\s+${propOrName}="${attrValue}"\\s+content=".*?"\\s*\\/?>`, 'i');
+    const newTag = `<meta ${propOrName}="${attrValue}" content="${content}" />`;
+    if (regex.test(html)) {
+      html = html.replace(regex, newTag);
+    } else {
+      html = html.replace('</head>', `  ${newTag}\n</head>`);
+    }
+  };
 
-  // 5. Replace or inject og:description
-  if (/property="og:description"/i.test(html)) {
-    html = html.replace(/<meta\s+property="og:description"\s+content=".*?"\s*\/?>/i, `<meta property="og:description" content="${escapedDesc}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta property="og:description" content="${escapedDesc}" />\n</head>`);
-  }
+  // Open Graph Tags
+  upsertMeta('property', 'og:title', escapedTitle);
+  upsertMeta('property', 'og:description', escapedDesc);
+  upsertMeta('property', 'og:url', escapedUrl);
+  upsertMeta('property', 'og:type', type);
+  upsertMeta('property', 'og:site_name', '飛田ガールズ');
+  upsertMeta('property', 'og:image', escapedImage);
+  upsertMeta('property', 'og:image:secure_url', escapedImage);
+  upsertMeta('property', 'og:image:type', 'image/jpeg');
+  upsertMeta('property', 'og:image:width', '1200');
+  upsertMeta('property', 'og:image:height', '630');
 
-  // 6. Replace or inject og:image
-  if (/property="og:image"\s+content/i.test(html)) {
-    html = html.replace(/<meta\s+property="og:image"\s+content=".*?"\s*\/?>/i, `<meta property="og:image" content="${escapedImage}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta property="og:image" content="${escapedImage}" />\n</head>`);
-  }
-
-  // 7. Replace or inject og:url
-  if (/property="og:url"/i.test(html)) {
-    html = html.replace(/<meta\s+property="og:url"\s+content=".*?"\s*\/?>/i, `<meta property="og:url" content="${escapedUrl}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta property="og:url" content="${escapedUrl}" />\n</head>`);
-  }
-
-  // 8. Replace or inject og:type
-  if (/property="og:type"/i.test(html)) {
-    html = html.replace(/<meta\s+property="og:type"\s+content=".*?"\s*\/?>/i, `<meta property="og:type" content="${type}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta property="og:type" content="${type}" />\n</head>`);
-  }
-
-  // 9. Replace or inject twitter:card
-  if (/name="twitter:card"/i.test(html)) {
-    html = html.replace(/<meta\s+name="twitter:card"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:card" content="summary_large_image" />`);
-  } else {
-    html = html.replace('</head>', `  <meta name="twitter:card" content="summary_large_image" />\n</head>`);
-  }
-
-  // 10. Replace or inject twitter:title
-  if (/name="twitter:title"/i.test(html)) {
-    html = html.replace(/<meta\s+name="twitter:title"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:title" content="${escapedTitle}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta name="twitter:title" content="${escapedTitle}" />\n</head>`);
-  }
-
-  // 11. Replace or inject twitter:description
-  if (/name="twitter:description"/i.test(html)) {
-    html = html.replace(/<meta\s+name="twitter:description"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:description" content="${escapedDesc}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta name="twitter:description" content="${escapedDesc}" />\n</head>`);
-  }
-
-  // 12. Replace or inject twitter:image
-  if (/name="twitter:image"/i.test(html)) {
-    html = html.replace(/<meta\s+name="twitter:image"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:image" content="${escapedImage}" />`);
-  } else {
-    html = html.replace('</head>', `  <meta name="twitter:image" content="${escapedImage}" />\n</head>`);
-  }
+  // Twitter Card Tags
+  upsertMeta('name', 'twitter:card', 'summary_large_image');
+  upsertMeta('name', 'twitter:title', escapedTitle);
+  upsertMeta('name', 'twitter:description', escapedDesc);
+  upsertMeta('name', 'twitter:image', escapedImage);
+  upsertMeta('name', 'twitter:image:alt', escapedTitle);
+  upsertMeta('name', 'twitter:site', '@tobitagirls');
 
   return html;
 }
 
-export function toAbsoluteImageUrl(imagePath: string, domain = 'https://tobitashinchi-recruit.com'): string {
+export function toAbsoluteImageUrl(imagePath: string, domain = 'https://tobitashinchi.pages.dev'): string {
   if (!imagePath) {
     return `${domain}/images/tobita_bright_future_1789106917071.jpg`;
   }
-  const clean = imagePath.trim();
+  let clean = imagePath.trim();
+  if (clean.includes('tobitashinchi-recruit.com')) {
+    clean = clean.replace(/https?:\/\/tobitashinchi-recruit\.com/g, domain);
+  }
   if (clean.startsWith('http://') || clean.startsWith('https://')) {
     return clean;
   }
@@ -133,7 +104,8 @@ async function main() {
   const rootDir = process.cwd();
   const distDir = path.join(rootDir, 'dist');
   const articlesFile = path.join(rootDir, 'data', 'blogArticles.json');
-  const baseDomain = 'https://tobitashinchi-recruit.com';
+  // Default to tobitashinchi.pages.dev where Cloudflare Pages hosts the images
+  const baseDomain = process.env.DEPLOY_DOMAIN || 'https://tobitashinchi.pages.dev';
 
   if (!fs.existsSync(distDir)) {
     console.warn('⚠️ dist directory not found. Please run vite build first.');
@@ -157,9 +129,9 @@ async function main() {
     }
   }
 
-  console.log(`🚀 Pre-rendering static HTML pages for ${articles.length} articles for X / OGP cards...`);
+  console.log(`🚀 Pre-rendering static HTML pages for ${articles.length} articles for X / OGP cards (Base Domain: ${baseDomain})...`);
 
-  // 1. Generate /blog/index.html
+  // 1. Generate /blog/index.html AND /blog.html
   const blogListDir = path.join(distDir, 'blog');
   if (!fs.existsSync(blogListDir)) {
     fs.mkdirSync(blogListDir, { recursive: true });
@@ -172,9 +144,11 @@ async function main() {
     url: `${baseDomain}/blog`,
     type: 'website'
   });
+  // Both directory index.html and direct .html for instant zero-redirect serving on Cloudflare Pages
   fs.writeFileSync(path.join(blogListDir, 'index.html'), blogListHtml, 'utf-8');
+  fs.writeFileSync(path.join(distDir, 'blog.html'), blogListHtml, 'utf-8');
 
-  // 2. Generate each /blog/:slug/index.html
+  // 2. Generate each /blog/:slug/index.html AND /blog/:slug.html
   let count = 0;
   for (const article of articles) {
     if (!article.slug) continue;
@@ -196,11 +170,14 @@ async function main() {
       type: 'article'
     });
 
+    // Write both /blog/slug/index.html AND /blog/slug.html
+    // This allows Cloudflare Pages to serve both /blog/slug and /blog/slug/ without any 308 redirect
     fs.writeFileSync(path.join(articleDir, 'index.html'), articleHtml, 'utf-8');
+    fs.writeFileSync(path.join(distDir, 'blog', `${article.slug}.html`), articleHtml, 'utf-8');
     count++;
   }
 
-  console.log(`✅ Successfully generated ${count} article static HTML pages with full X (Twitter) Card & OGP meta tags in dist/blog/!`);
+  console.log(`✅ Successfully generated ${count} article static HTML pages (both .html and /index.html) with full X (Twitter) Card & OGP meta tags in dist/blog/!`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -948,17 +948,26 @@ JSONスキーマ：
 
   function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi.pages.dev"): string {
     if (!imagePath) {
-      return `${domain}/images/tobita_bright_future_1789106917071.jpg`;
+      return `${domain}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
     }
     let clean = imagePath.trim();
     if (clean.includes("tobitashinchi-recruit.com")) {
       clean = clean.replace(/https?:\/\/tobitashinchi-recruit\.com/g, domain);
     }
+    let fullUrl = "";
     if (clean.startsWith("http://") || clean.startsWith("https://")) {
-      return clean;
+      fullUrl = clean;
+    } else {
+      const normalizedPath = clean.startsWith("/") ? clean : `/${clean}`;
+      fullUrl = `${domain}${normalizedPath}`;
     }
-    const normalizedPath = clean.startsWith("/") ? clean : `/${clean}`;
-    return `${domain}${normalizedPath}`;
+
+    if (fullUrl.includes("/images/") && !fullUrl.includes("/images/og_")) {
+      fullUrl = fullUrl.replace("/images/", "/images/og_");
+    }
+
+    const separator = fullUrl.includes("?") ? "&" : "?";
+    return `${fullUrl}${separator}v=3`;
   }
 
   function injectMetaIntoHtml(baseHtml: string, meta: {
@@ -1004,11 +1013,16 @@ JSONスキーマ：
       html = html.replace("</head>", `  <meta property="og:description" content="${escapedDesc}" />\n</head>`);
     }
 
-    // 6. Replace or inject og:image
+    // 6. Replace or inject og:image & og:image:secure_url
     if (/property="og:image"\s+content/i.test(html)) {
       html = html.replace(/<meta\s+property="og:image"\s+content=".*?"\s*\/?>/i, `<meta property="og:image" content="${escapedImage}" />`);
     } else {
       html = html.replace("</head>", `  <meta property="og:image" content="${escapedImage}" />\n</head>`);
+    }
+    if (/property="og:image:secure_url"\s+content/i.test(html)) {
+      html = html.replace(/<meta\s+property="og:image:secure_url"\s+content=".*?"\s*\/?>/i, `<meta property="og:image:secure_url" content="${escapedImage}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta property="og:image:secure_url" content="${escapedImage}" />\n</head>`);
     }
 
     // 7. Replace or inject og:url
@@ -1051,6 +1065,13 @@ JSONスキーマ：
       html = html.replace(/<meta\s+name="twitter:image"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:image" content="${escapedImage}" />`);
     } else {
       html = html.replace("</head>", `  <meta name="twitter:image" content="${escapedImage}" />\n</head>`);
+    }
+
+    // 13. Replace or inject twitter:image:alt
+    if (/name="twitter:image:alt"/i.test(html)) {
+      html = html.replace(/<meta\s+name="twitter:image:alt"\s+content=".*?"\s*\/?>/i, `<meta name="twitter:image:alt" content="${escapedTitle}" />`);
+    } else {
+      html = html.replace("</head>", `  <meta name="twitter:image:alt" content="${escapedTitle}" />\n</head>`);
     }
 
     return html;

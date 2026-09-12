@@ -44,12 +44,22 @@ async function main() {
   console.log('📦 2. 本番用ウェブサイトZIP (tobita-girls-website-release.zip) を作成中...');
   if (fs.existsSync(distDir)) {
     const zipRelease = new AdmZip();
-    zipRelease.addLocalFolder(distDir);
+    const distItems = fs.readdirSync(distDir);
+    for (const item of distItems) {
+      if (item.endsWith('.zip')) continue;
+      const fullPath = path.join(distDir, item);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        zipRelease.addLocalFolder(fullPath, item);
+      } else {
+        zipRelease.addLocalFile(fullPath);
+      }
+    }
     
-    // ルート、public双方に書き込み
     zipRelease.writeZip(rootReleaseZip);
-    zipRelease.writeZip(publicReleaseZip);
-    console.log(`✅ 作成完了: ${rootReleaseZip} & ${publicReleaseZip}`);
+    fs.copyFileSync(rootReleaseZip, publicReleaseZip);
+    fs.copyFileSync(rootReleaseZip, path.join(distDir, releaseZipName));
+    console.log(`✅ 作成完了: ${rootReleaseZip} (${(fs.statSync(rootReleaseZip).size / (1024 * 1024)).toFixed(2)} MB)`);
   } else {
     console.error('❌ distディレクトリが見つかりません。');
   }
@@ -72,7 +82,7 @@ async function main() {
   ];
 
   for (const item of items) {
-    if (excludeList.includes(item)) continue;
+    if (excludeList.includes(item) || item.endsWith('.zip')) continue;
     
     const fullPath = path.join(rootDir, item);
     const stat = fs.statSync(fullPath);
@@ -85,19 +95,9 @@ async function main() {
   }
 
   zipSource.writeZip(rootSourceZip);
-  zipSource.writeZip(publicSourceZip);
-  console.log(`✅ 作成完了: ${rootSourceZip} & ${publicSourceZip}`);
-
-  // ----------------------------------------------------
-  // ④ ZIPを含めた状態でもう一度ビルド（これにより dist/ にもZIPがコピーされます）
-  // ----------------------------------------------------
-  console.log('📦 4. ZIPを同梱した最終Productionビルドを実行中...');
-  try {
-    execSync('npm run build', { stdio: 'inherit' });
-    console.log('✅ 最終ビルドが完了しました。これでURLからZIPが直接ダウンロード可能になります。');
-  } catch (error) {
-    console.error('❌ 最終ビルドエラー:', error);
-  }
+  fs.copyFileSync(rootSourceZip, publicSourceZip);
+  fs.copyFileSync(rootSourceZip, path.join(distDir, sourceZipName));
+  console.log(`✅ 作成完了: ${rootSourceZip} (${(fs.statSync(rootSourceZip).size / (1024 * 1024)).toFixed(2)} MB)`);
 
   console.log('\n 🎉 すべてのZIPファイルの生成に成功しました！');
 }

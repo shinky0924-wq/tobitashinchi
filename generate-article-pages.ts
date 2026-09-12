@@ -87,17 +87,28 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
 
 export function toAbsoluteImageUrl(imagePath: string, domain = 'https://tobitashinchi.pages.dev'): string {
   if (!imagePath) {
-    return `${domain}/images/tobita_bright_future_1789106917071.jpg`;
+    return `${domain}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
   }
   let clean = imagePath.trim();
   if (clean.includes('tobitashinchi-recruit.com')) {
     clean = clean.replace(/https?:\/\/tobitashinchi-recruit\.com/g, domain);
   }
+  let fullUrl = '';
   if (clean.startsWith('http://') || clean.startsWith('https://')) {
-    return clean;
+    fullUrl = clean;
+  } else {
+    const normalizedPath = clean.startsWith('/') ? clean : `/${clean}`;
+    fullUrl = `${domain}${normalizedPath}`;
   }
-  const normalizedPath = clean.startsWith('/') ? clean : `/${clean}`;
-  return `${domain}${normalizedPath}`;
+
+  // Use the 1200x630 clean stripped OGP image version if not already prefixed
+  if (fullUrl.includes('/images/') && !fullUrl.includes('/images/og_')) {
+    fullUrl = fullUrl.replace('/images/', '/images/og_');
+  }
+
+  // Add cache buster query param so Twitter/X, LINE, Facebook re-fetches without relying on cached 404
+  const separator = fullUrl.includes('?') ? '&' : '?';
+  return `${fullUrl}${separator}v=3`;
 }
 
 async function main() {
@@ -140,7 +151,7 @@ async function main() {
   const blogListHtml = injectMetaIntoHtml(baseHtml, {
     title: 'お仕事コラム一覧 | 飛田ガールズ【公式求人】',
     description: '飛田新地のお仕事コラム・お役立ち情報一覧。給料システム、面接対策、身バレ防止、未経験からの働き方などを詳しく解説しています。',
-    imageUrl: `${baseDomain}/images/col_ryotei_flow_1789107427433.jpg`,
+    imageUrl: toAbsoluteImageUrl('/images/col_ryotei_flow_1789107427433.jpg', baseDomain),
     url: `${baseDomain}/blog`,
     type: 'website'
   });

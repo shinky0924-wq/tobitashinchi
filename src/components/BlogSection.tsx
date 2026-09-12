@@ -80,7 +80,11 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
 
       const eyeCatch = getValidArticleEyeCatch(currentArticle);
       const origin = typeof window !== 'undefined' ? (window.location.hostname.includes('localhost') ? 'https://tobitashinchi.pages.dev' : window.location.origin) : 'https://tobitashinchi.pages.dev';
-      const fullImageUrl = eyeCatch.startsWith('http') ? eyeCatch : `${origin}${eyeCatch.startsWith('/') ? '' : '/'}${eyeCatch}`;
+      let fullImageUrl = eyeCatch.startsWith('http') ? eyeCatch : `${origin}${eyeCatch.startsWith('/') ? '' : '/'}${eyeCatch}`;
+      if (fullImageUrl.includes('/images/') && !fullImageUrl.includes('/images/og_')) {
+        fullImageUrl = fullImageUrl.replace('/images/', '/images/og_');
+      }
+      fullImageUrl += `${fullImageUrl.includes('?') ? '&' : '?'}v=3`;
 
       const ogImage = document.querySelector('meta[property="og:image"]');
       if (ogImage) ogImage.setAttribute('content', fullImageUrl);
@@ -114,7 +118,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
       if (ogDesc) ogDesc.setAttribute('content', defaultDesc);
 
       const origin = typeof window !== 'undefined' ? (window.location.hostname.includes('localhost') ? 'https://tobitashinchi.pages.dev' : window.location.origin) : 'https://tobitashinchi.pages.dev';
-      const defaultImage = `${origin}/images/tobita_bright_future_1789106917071.jpg`;
+      const defaultImage = `${origin}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
 
       const ogImage = document.querySelector('meta[property="og:image"]');
       if (ogImage) ogImage.setAttribute('content', defaultImage);

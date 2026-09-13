@@ -3,6 +3,7 @@ import { BookOpen } from 'lucide-react';
 
 interface ArticleCardImageProps {
   src?: string;
+  fallbackSrc?: string;
   alt?: string;
   categoryLabel?: string;
   category?: string;
@@ -25,6 +26,7 @@ const normalizeUrl = (originalUrl?: string): string => {
 
 export const ArticleCardImage: FC<ArticleCardImageProps> = memo(({
   src,
+  fallbackSrc,
   alt = '',
   categoryLabel,
   category,
@@ -33,17 +35,20 @@ export const ArticleCardImage: FC<ArticleCardImageProps> = memo(({
 }) => {
   const [imgSrc, setImgSrc] = useState<string>(() => normalizeUrl(src));
   const [failed, setFailed] = useState<boolean>(false);
-  const [triedFallback, setTriedFallback] = useState<boolean>(false);
+  const [fallbackStage, setFallbackStage] = useState<number>(0);
 
   useEffect(() => {
     setImgSrc(normalizeUrl(src));
     setFailed(false);
-    setTriedFallback(false);
+    setFallbackStage(0);
   }, [src]);
 
   const handleError = () => {
-    if (!triedFallback) {
-      setTriedFallback(true);
+    if (fallbackStage === 0 && fallbackSrc) {
+      setFallbackStage(1);
+      setImgSrc(normalizeUrl(fallbackSrc));
+    } else if (fallbackStage <= 1) {
+      setFallbackStage(2);
       setImgSrc(DEFAULT_FALLBACK_IMAGE);
     } else {
       setFailed(true);

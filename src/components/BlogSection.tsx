@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BLOG_CATEGORIES, BlogArticle, getValidArticleEyeCatch } from '../blogData';
+import { BLOG_CATEGORIES, BlogArticle, getValidArticleEyeCatch, getValidArticleCardImage } from '../blogData';
 import { ArticleCardImage } from './ArticleCardImage';
 import { BookOpen, Calendar, Clock, Search, ArrowLeft, Tag, MessageCircle, ChevronRight, ChevronLeft, Sparkles, Send, ShieldCheck, HeartHandshake } from 'lucide-react';
 
@@ -255,18 +255,16 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                       onClick={() => handleSelectArticle(article.slug)}
                       className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-outline-variant shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"
                     >
-                      {/* Eyecatch Image */}
-                      <div className="relative h-48 bg-rose-50/50 flex items-center justify-center overflow-hidden">
+                      {/* Eyecatch Image (Design card banner with title & tags) */}
+                      <div className="relative aspect-[1200/630] bg-rose-50/50 flex items-center justify-center overflow-hidden">
                         <ArticleCardImage
-                          src={getValidArticleEyeCatch(article)}
+                          src={getValidArticleCardImage(article)}
+                          fallbackSrc={getValidArticleEyeCatch(article)}
                           alt={article.title}
                           category={article.category}
                           categoryLabel={article.categoryLabel}
                           className="w-full h-full"
                         />
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold text-secondary shadow-xs z-10">
-                          {article.categoryLabel}
-                        </div>
                       </div>
 
                       {/* Meta & Title */}
@@ -456,18 +454,16 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
             </button>
 
             {/* Eyecatch hero */}
-            <div className="h-56 md:h-72 rounded-4xl bg-rose-50/50 flex flex-col items-center justify-center relative overflow-hidden shadow-xs border border-outline-variant">
+            <div className="aspect-[1200/630] max-h-[460px] w-full rounded-3xl md:rounded-4xl bg-rose-50/50 flex flex-col items-center justify-center relative overflow-hidden shadow-xs border border-outline-variant">
               <ArticleCardImage
-                src={getValidArticleEyeCatch(currentArticle!)}
+                src={getValidArticleCardImage(currentArticle!)}
+                fallbackSrc={getValidArticleEyeCatch(currentArticle!)}
                 alt={currentArticle!.title}
                 category={currentArticle!.category}
                 categoryLabel={currentArticle!.categoryLabel}
                 className="w-full h-full"
                 isDetailHero={true}
               />
-              <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-bold text-secondary shadow-xs z-10">
-                {currentArticle!.categoryLabel}
-              </div>
             </div>
 
             {/* Article Header info */}

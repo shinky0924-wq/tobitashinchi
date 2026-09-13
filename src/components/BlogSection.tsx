@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BLOG_CATEGORIES, BlogArticle, getValidArticleEyeCatch } from '../blogData';
 import { ArticleCardImage } from './ArticleCardImage';
-import { BookOpen, Calendar, Clock, Search, ArrowLeft, Tag, MessageCircle, ChevronRight, ChevronLeft, Sparkles, Send, ShieldCheck, HeartHandshake, Share2, Copy, Check } from 'lucide-react';
+import { BookOpen, Calendar, Clock, Search, ArrowLeft, Tag, MessageCircle, ChevronRight, ChevronLeft, Sparkles, Send, ShieldCheck, HeartHandshake } from 'lucide-react';
 
 interface BlogSectionProps {
   articles: BlogArticle[];
@@ -17,7 +17,6 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const ARTICLES_PER_PAGE = 9;
 
   const isLoading = useMemo(() => {
@@ -133,23 +132,6 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
   const handleSelectArticle = (slug: string) => {
     onSelectSlug(slug);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleShareOnX = (article: BlogArticle) => {
-    const articleUrl = `https://tobitashinchi.pages.dev/blog/${article.slug}`;
-    const text = `【飛田新地お仕事コラム】\n${article.title}\n\n#飛田新地 #飛田新地求人 #高収入バイト #飛田ガールズ`;
-    const shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(text)}`;
-    window.open(shareUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleCopyUrl = (slug: string) => {
-    const articleUrl = `https://tobitashinchi.pages.dev/blog/${slug}`;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(articleUrl).then(() => {
-        setCopiedUrl(true);
-        setTimeout(() => setCopiedUrl(false), 2500);
-      });
-    }
   };
 
   const handleCtaInArticle = (articleTitle: string) => {
@@ -490,28 +472,15 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
 
             {/* Article Header info */}
             <div className="mt-8 border-b border-rose-100 pb-6">
-              <div className="flex items-center justify-between gap-4 text-xs font-sans text-on-surface-variant mb-4">
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-lg">
-                    <Calendar size={13} />
-                    <span className="font-mono">{(currentArticle!.publishedAt || '').replace(/-/g, '.')}</span>
-                  </span>
-                  <span className="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-lg">
-                    <Clock size={13} />
-                    読了<span className="font-mono">{currentArticle!.readTime}</span>
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleShareOnX(currentArticle!)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-2xs"
-                  title="Xでこの記事をポストする"
-                >
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                  </svg>
-                  <span>ポスト</span>
-                </button>
+              <div className="flex items-center gap-4 text-xs font-sans text-on-surface-variant mb-4">
+                <span className="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-lg">
+                  <Calendar size={13} />
+                  <span className="font-mono">{(currentArticle!.publishedAt || '').replace(/-/g, '.')}</span>
+                </span>
+                <span className="flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-lg">
+                  <Clock size={13} />
+                  読了<span className="font-mono">{currentArticle!.readTime}</span>
+                </span>
               </div>
 
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold leading-snug text-[#2c1a1e] tracking-tight">
@@ -609,42 +578,6 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                 <ArrowLeft size={15} />
                 コラム一覧に戻る
               </button>
-            </div>
-
-            {/* SNS Share Block */}
-            <div className="mt-10 p-6 bg-white rounded-3xl border border-rose-100 shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2 text-sm font-bold text-[#2c1a1e]">
-                    <Share2 size={16} className="text-secondary" />
-                    <span>この記事をシェア・紹介する</span>
-                  </div>
-                  <p className="text-xs text-on-surface-variant mt-1">
-                    X（Twitter）でシェアすると、記事の見出し文字と内容が入った大判アイキャッチ画像（1200×630px）付きで投稿されます。
-                  </p>
-                </div>
-                <div className="flex items-center gap-2.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleShareOnX(currentArticle!)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0f1419] hover:bg-black text-white text-xs sm:text-sm font-bold rounded-2xl shadow-sm hover:shadow transition-all cursor-pointer"
-                  >
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                    </svg>
-                    <span>Xでポスト</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCopyUrl(currentArticle!.slug)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-rose-50 hover:bg-rose-100/70 text-secondary border border-rose-200 text-xs sm:text-sm font-bold rounded-2xl transition-all cursor-pointer"
-                  >
-                    {copiedUrl ? <Check size={15} className="text-emerald-600" /> : <Copy size={15} />}
-                    <span>{copiedUrl ? 'コピー完了！' : 'URLコピー'}</span>
-                  </button>
-                </div>
-              </div>
             </div>
 
             {/* Banner block */}

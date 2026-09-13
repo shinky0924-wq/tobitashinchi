@@ -73,13 +73,6 @@ export function getValidArticleEyeCatch(art: { id?: string | number; slug?: stri
   return '/images/tobita_bright_future_1789106917071.jpg';
 }
 
-export function getValidArticleCardImage(art: { id?: string | number; slug?: string; category?: string; eyeCatch?: string }): string {
-  if (art && art.slug) {
-    return `/images/card_${art.slug}.jpg`;
-  }
-  return getValidArticleEyeCatch(art);
-}
-
 const BLOG_DATA_VERSION = '20260911_tobita_distinct_images_v4';
 
 export function getStoredArticles(): BlogArticle[] {

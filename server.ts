@@ -948,7 +948,7 @@ JSONスキーマ：
 
   function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi.pages.dev"): string {
     if (!imagePath) {
-      return `${domain}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
+      return `${domain}/images/og_tobita_bright_future_1789106917071.jpg`;
     }
     let clean = imagePath.trim();
     if (clean.includes("tobitashinchi-recruit.com")) {
@@ -966,8 +966,7 @@ JSONスキーマ：
       fullUrl = fullUrl.replace("/images/", "/images/og_");
     }
 
-    const separator = fullUrl.includes("?") ? "&" : "?";
-    return `${fullUrl}${separator}v=3`;
+    return fullUrl;
   }
 
   function injectMetaIntoHtml(baseHtml: string, meta: {
@@ -1114,7 +1113,10 @@ JSONスキーマ：
       }
 
       const baseUrl = getRequestBaseUrl(req);
-      const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseUrl);
+      const cardFileName = `card_${article.slug}.jpg`;
+      const hasCard = fs.existsSync(path.join(projectRootDir, "public", "images", cardFileName)) ||
+                      fs.existsSync(path.join(distPath, "images", cardFileName));
+      const fullImageUrl = hasCard ? `${baseUrl}/images/${cardFileName}` : toAbsoluteImageUrl(article.eyeCatch, baseUrl);
       const articleUrl = `${baseUrl}/blog/${article.slug}`;
       const articleTitle = `${article.title} | 飛田ガールズ`;
       const articleDesc = article.summary || `${article.title}についての詳しいお仕事解説記事です。`;

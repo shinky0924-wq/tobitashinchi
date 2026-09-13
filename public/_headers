@@ -3,8 +3,7 @@
 
 /images/*
   Access-Control-Allow-Origin: *
-  Cache-Control: public, max-age=31536000, immutable
-  Accept-Ranges: bytes
+  Cache-Control: public, max-age=86400
 
 /*.html
   Cache-Control: public, max-age=0, must-revalidate

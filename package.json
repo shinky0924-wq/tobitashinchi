@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "mkdir -p public/images public/assets/images && cp -r src/assets/images/* public/images/ 2>/dev/null || true && cp -r src/assets/images/* public/assets/images/ 2>/dev/null || true && vite build && tsx generate-article-pages.ts && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build": "mkdir -p public/images public/assets/images && cp -r src/assets/images/* public/images/ 2>/dev/null || true && cp -r src/assets/images/* public/assets/images/ 2>/dev/null || true && tsx generate-og-cards.ts && vite build && tsx generate-article-pages.ts && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
@@ -27,6 +27,7 @@
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

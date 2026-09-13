@@ -63,24 +63,35 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
   };
 
   // Open Graph Tags
+  upsertMeta('property', 'og:site_name', '飛田ガールズ');
+  upsertMeta('property', 'og:url', escapedUrl);
   upsertMeta('property', 'og:title', escapedTitle);
   upsertMeta('property', 'og:description', escapedDesc);
-  upsertMeta('property', 'og:url', escapedUrl);
-  upsertMeta('property', 'og:type', type);
-  upsertMeta('property', 'og:site_name', '飛田ガールズ');
   upsertMeta('property', 'og:image', escapedImage);
   upsertMeta('property', 'og:image:secure_url', escapedImage);
   upsertMeta('property', 'og:image:type', 'image/jpeg');
   upsertMeta('property', 'og:image:width', '1200');
   upsertMeta('property', 'og:image:height', '630');
+  upsertMeta('property', 'og:type', type);
 
-  // Twitter Card Tags
+  // note.com compatible thumbnail & robots
+  upsertMeta('name', 'thumbnail', escapedImage);
+  upsertMeta('name', 'robots', 'index, follow, max-image-preview:large');
+
+  // Twitter Card Tags (note.com standard: dual property & name support)
+  upsertMeta('property', 'twitter:card', 'summary_large_image');
   upsertMeta('name', 'twitter:card', 'summary_large_image');
+  upsertMeta('property', 'twitter:site', '@tobitagirls');
+  upsertMeta('name', 'twitter:site', '@tobitagirls');
+  upsertMeta('property', 'twitter:url', escapedUrl);
+  upsertMeta('name', 'twitter:url', escapedUrl);
+  upsertMeta('property', 'twitter:title', escapedTitle);
   upsertMeta('name', 'twitter:title', escapedTitle);
+  upsertMeta('property', 'twitter:description', escapedDesc);
   upsertMeta('name', 'twitter:description', escapedDesc);
+  upsertMeta('property', 'twitter:image', escapedImage);
   upsertMeta('name', 'twitter:image', escapedImage);
   upsertMeta('name', 'twitter:image:alt', escapedTitle);
-  upsertMeta('name', 'twitter:site', '@tobitagirls');
 
   return html;
 }

@@ -87,7 +87,7 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
 
 export function toAbsoluteImageUrl(imagePath: string, domain = 'https://tobitashinchi.pages.dev'): string {
   if (!imagePath) {
-    return `${domain}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
+    return `${domain}/images/og_tobita_bright_future_1789106917071.jpg`;
   }
   let clean = imagePath.trim();
   if (clean.includes('tobitashinchi-recruit.com')) {
@@ -106,9 +106,8 @@ export function toAbsoluteImageUrl(imagePath: string, domain = 'https://tobitash
     fullUrl = fullUrl.replace('/images/', '/images/og_');
   }
 
-  // Add cache buster query param so Twitter/X, LINE, Facebook re-fetches without relying on cached 404
-  const separator = fullUrl.includes('?') ? '&' : '?';
-  return `${fullUrl}${separator}v=3`;
+  // Return clean URL ending in .jpg (ensures strict bots detect standard image extension)
+  return fullUrl;
 }
 
 async function main() {

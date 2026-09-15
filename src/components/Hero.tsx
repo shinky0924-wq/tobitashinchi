@@ -90,7 +90,7 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
                 const target = e.currentTarget;
                 if (!target.dataset.triedFallback) {
                   target.dataset.triedFallback = '1';
-                  target.src = '/images/japanese_hero_banner.jpg';
+                  target.src = '/images/tobita_atmosphere_hero.jpg';
                 } else {
                   target.onerror = null;
                 }

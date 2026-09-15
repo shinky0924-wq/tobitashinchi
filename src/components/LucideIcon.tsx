@@ -36,7 +36,9 @@ import {
   AlertCircle,
   Shuffle,
   RefreshCw,
-  UserCheck
+  UserCheck,
+  CameraOff,
+  ShieldCheck
 } from 'lucide-react';
 
 const iconMap = {
@@ -72,7 +74,9 @@ const iconMap = {
   AlertCircle,
   Shuffle,
   RefreshCw,
-  UserCheck
+  UserCheck,
+  CameraOff,
+  ShieldCheck
 };
 
 export type IconName = keyof typeof iconMap;

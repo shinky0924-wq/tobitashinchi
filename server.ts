@@ -948,7 +948,7 @@ JSONスキーマ：
 
   function toAbsoluteImageUrl(imagePath: string, domain = "https://tobitashinchi.pages.dev"): string {
     if (!imagePath) {
-      return `${domain}/images/og_tobita_bright_future_1789106917071.jpg`;
+      return `${domain}/images/japanese_hero_banner.jpg`;
     }
     let clean = imagePath.trim();
     if (clean.includes("tobitashinchi-recruit.com")) {

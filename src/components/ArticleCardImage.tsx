@@ -10,7 +10,7 @@ interface ArticleCardImageProps {
   isDetailHero?: boolean;
 }
 
-const DEFAULT_FALLBACK_IMAGE = '/images/tobita_bright_future_1789106917071.jpg';
+const DEFAULT_FALLBACK_IMAGE = '/images/japanese_hero_banner.jpg';
 
 const normalizeUrl = (originalUrl?: string): string => {
   if (!originalUrl) return DEFAULT_FALLBACK_IMAGE;
@@ -66,6 +66,7 @@ export const ArticleCardImage: FC<ArticleCardImageProps> = memo(({
         alt={alt}
         loading="lazy"
         decoding="async"
+        referrerPolicy="no-referrer"
         onError={handleError}
         className={`w-full h-full object-cover transition-transform duration-500 ${
           !isDetailHero ? 'group-hover:scale-105' : ''

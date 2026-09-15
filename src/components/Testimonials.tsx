@@ -72,9 +72,9 @@ export default function Testimonials() {
                             if (!target.dataset.tried) {
                               target.dataset.tried = '1';
                               const fallbacks = [
-                                '/images/cast_avatar_one_1789108601323.jpg',
-                                '/images/cast_avatar_two_1789108616238.jpg',
-                                '/images/tobita_bright_future_1789106917071.jpg'
+                                '/images/japanese_cast_avatar_one.jpg',
+                                '/images/japanese_cast_avatar_two.jpg',
+                                '/images/japanese_cast_avatar_three.jpg'
                               ];
                               target.src = fallbacks[idx % fallbacks.length];
                             } else {

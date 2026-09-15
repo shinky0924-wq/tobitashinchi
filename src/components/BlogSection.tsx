@@ -113,7 +113,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
       if (ogDesc) ogDesc.setAttribute('content', defaultDesc);
 
       const origin = typeof window !== 'undefined' ? (window.location.hostname.includes('localhost') ? 'https://tobitashinchi.pages.dev' : window.location.origin) : 'https://tobitashinchi.pages.dev';
-      const defaultImage = `${origin}/images/og_tobita_bright_future_1789106917071.jpg?v=3`;
+      const defaultImage = `${origin}/images/japanese_hero_banner.jpg`;
 
       const ogImage = document.querySelector('meta[property="og:image"]');
       if (ogImage) ogImage.setAttribute('content', defaultImage);
@@ -151,7 +151,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
   };
 
   const formatEyeCatchUrl = (url: string) => {
-    if (!url) return '/images/col_beginner_guide_art_1787803245812.jpg';
+    if (!url) return '/images/japanese_hero_banner.jpg';
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
     let clean = url.trim();
     if (clean.startsWith('/src/assets/images/')) {

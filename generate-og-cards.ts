@@ -102,7 +102,7 @@ export async function generateOgCardForArticle(article: BlogArticle, outputDir: 
   const height = 630;
 
   // Resolve base image
-  const defaultImage = path.join(process.cwd(), 'public', 'images', 'tobita_bright_future_1789106917071.jpg');
+  const defaultImage = path.join(process.cwd(), 'public', 'images', 'japanese_hero_banner.jpg');
   let baseImagePath = defaultImage;
 
   if (article.eyeCatch) {

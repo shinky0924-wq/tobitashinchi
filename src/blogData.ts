@@ -70,10 +70,10 @@ export function getValidArticleEyeCatch(art: { id?: string | number; slug?: stri
     return categoryMatch.eyeCatch;
   }
 
-  return '/images/tobita_bright_future_1789106917071.jpg';
+  return '/images/japanese_hero_banner.jpg';
 }
 
-const BLOG_DATA_VERSION = '20260911_tobita_distinct_images_v4';
+const BLOG_DATA_VERSION = '20260915_japanese_prompts_aligned_v3';
 
 export function getStoredArticles(): BlogArticle[] {
   if (typeof window === 'undefined') return BLOG_ARTICLES;

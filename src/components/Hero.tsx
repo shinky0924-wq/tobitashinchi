@@ -90,7 +90,7 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
                 const target = e.currentTarget;
                 if (!target.dataset.triedFallback) {
                   target.dataset.triedFallback = '1';
-                  target.src = '/images/tobita_bright_future_1789106917071.jpg';
+                  target.src = '/images/japanese_hero_banner.jpg';
                 } else {
                   target.onerror = null;
                 }

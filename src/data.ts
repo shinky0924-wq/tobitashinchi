@@ -5,11 +5,11 @@
 
 import { ConcernItem, ReasonItem, FAQItem, TestimonialItem, JobFactItem, FlowStep } from './types';
 
-const tobitaCastOne = '/images/cast_avatar_one_1789108601323.jpg';
-const tobitaCastTwo = '/images/cast_avatar_two_1789108616238.jpg';
-const tobitaCastThree = '/images/cast_avatar_three_1789110410676.jpg';
-const tobitaDreamHeroBanner = '/images/tobita_bright_future_1789106917071.jpg';
-const tobitaAdvisorAvatar = '/images/staff_lounge_support_1789108549559.jpg';
+const tobitaCastOne = '/images/japanese_cast_avatar_one.jpg';
+const tobitaCastTwo = '/images/japanese_cast_avatar_two.jpg';
+const tobitaCastThree = '/images/japanese_cast_avatar_three.jpg';
+const tobitaDreamHeroBanner = '/images/japanese_hero_banner.jpg';
+const tobitaAdvisorAvatar = '/images/japanese_staff_advisor.jpg';
 
 // ==========================================
 // 【LINE公式アカウント連携用設定】

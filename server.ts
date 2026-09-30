@@ -1101,9 +1101,30 @@ JSONスキーマ：
         return res.redirect("/blog");
       }
 
-      // Pick a random article
-      const randomIdx = Math.floor(Math.random() * allArticles.length);
-      const article = allArticles[randomIdx];
+      // Select article (support deterministic parameter like ?t=... or ?seed=... or ?id=... or ?slug=...)
+      const seedParam = (req.query.t || req.query.seed || req.query.id || req.query.slug || "") as string;
+      let article = allArticles[0];
+      if (seedParam) {
+        const trimmed = String(seedParam).trim();
+        const bySlug = allArticles.find((a: any) => a.slug === trimmed);
+        const byId = allArticles.find((a: any) => String(a.id) === trimmed);
+        if (bySlug) {
+          article = bySlug;
+        } else if (byId) {
+          article = byId;
+        } else {
+          let hash = 0;
+          for (let i = 0; i < trimmed.length; i++) {
+            hash = ((hash << 5) - hash) + trimmed.charCodeAt(i);
+            hash |= 0;
+          }
+          const idx = Math.abs(hash) % allArticles.length;
+          article = allArticles[idx];
+        }
+      } else {
+        const randomIdx = Math.floor(Math.random() * allArticles.length);
+        article = allArticles[randomIdx];
+      }
 
       const baseUrl = getRequestBaseUrl(req);
       const targetUrl = `${baseUrl}/blog/${article.slug}`;

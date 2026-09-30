@@ -1,0 +1,12 @@
+/*
+  X-Content-Type-Options: nosniff
+
+/images/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=86400
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/blog/*
+  Cache-Control: public, max-age=0, must-revalidate

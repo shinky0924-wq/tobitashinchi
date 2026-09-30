@@ -1,0 +1,6 @@
+{
+  "name": "飛田ガールズ",
+  "description": "飛田新地料亭グループ直営 公式求人サイト。中間マージンなし・雑費天引きゼロ・全額日払い手渡し",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

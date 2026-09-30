@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow anyone to read and write to consultations and cms collections
+    match /consultations/{document} {
+      allow read, write: if true;
+    }
+    match /cms/{document} {
+      allow read, write: if true;
+    }
+    // Fallback default rule
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

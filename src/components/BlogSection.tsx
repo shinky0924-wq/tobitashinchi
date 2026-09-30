@@ -257,7 +257,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                       className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-outline-variant shadow-sm hover:shadow-md hover:-translate-y-1 transition-all cursor-pointer"
                     >
                       {/* Eyecatch Image */}
-                      <div className="relative h-48 bg-rose-50/50 flex items-center justify-center overflow-hidden">
+                      <div className="relative aspect-[16/9] w-full bg-rose-50/50 flex items-center justify-center overflow-hidden">
                         <ArticleCardImage
                           src={getValidArticleEyeCatch(article)}
                           alt={article.title}
@@ -265,14 +265,14 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                           categoryLabel={article.categoryLabel}
                           className="w-full h-full"
                         />
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-semibold text-secondary shadow-xs z-10">
-                          {article.categoryLabel}
-                        </div>
                       </div>
 
                       {/* Meta & Title */}
                       <div className="flex-grow p-6 flex flex-col">
-                        <div className="flex items-center gap-4 text-xs text-on-surface-variant font-sans mb-3">
+                        <div className="flex items-center gap-3 text-xs text-on-surface-variant font-sans mb-3">
+                          <span className="bg-rose-50 text-secondary border border-rose-100 font-semibold px-2.5 py-0.5 rounded-full text-[11px]">
+                            {article.categoryLabel}
+                          </span>
                           <span className="flex items-center gap-1">
                             <Calendar size={13} />
                             <span className="font-mono">{(article.publishedAt || '').replace(/-/g, '.')}</span>
@@ -457,7 +457,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
             </button>
 
             {/* Eyecatch hero */}
-            <div className="h-56 md:h-72 rounded-4xl bg-rose-50/50 flex flex-col items-center justify-center relative overflow-hidden shadow-xs border border-outline-variant">
+            <div className="aspect-[16/9] md:aspect-[1.91/1] w-full rounded-4xl bg-rose-50/50 flex flex-col items-center justify-center relative overflow-hidden shadow-xs border border-outline-variant">
               <ArticleCardImage
                 src={getValidArticleEyeCatch(currentArticle!)}
                 alt={currentArticle!.title}
@@ -466,9 +466,6 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                 className="w-full h-full"
                 isDetailHero={true}
               />
-              <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-bold text-secondary shadow-xs z-10">
-                {currentArticle!.categoryLabel}
-              </div>
             </div>
 
             {/* Article Header info */}

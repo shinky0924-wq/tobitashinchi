@@ -37,19 +37,16 @@ export const BLOG_CATEGORIES = [
 export const BLOG_ARTICLES: BlogArticle[] = blogArticlesJson as BlogArticle[];
 
 export function getValidArticleEyeCatch(art: { id?: string | number; slug?: string; category?: string; eyeCatch?: string }): string {
-  // If slug matches, prioritize the curated default image
+  // If slug matches, return dedicated cute card directly
   if (art && art.slug) {
-    const slugMatch = BLOG_ARTICLES.find(d => d.slug === art.slug);
-    if (slugMatch && slugMatch.eyeCatch) {
-      return slugMatch.eyeCatch;
-    }
+    return `/images/card_${art.slug}.jpg`;
   }
 
-  // If art matches a default article ID, prioritize the curated default image
+  // If art matches a default article ID, return dedicated cute card
   if (art && art.id !== undefined) {
     const defaultMatch = BLOG_ARTICLES.find(d => String(d.id) === String(art.id));
-    if (defaultMatch && defaultMatch.eyeCatch) {
-      return defaultMatch.eyeCatch;
+    if (defaultMatch && defaultMatch.slug) {
+      return `/images/card_${defaultMatch.slug}.jpg`;
     }
   }
 
@@ -66,14 +63,14 @@ export function getValidArticleEyeCatch(art: { id?: string | number; slug?: stri
 
   // Find fallback from category
   const categoryMatch = BLOG_ARTICLES.find(d => d.category === art?.category);
-  if (categoryMatch && categoryMatch.eyeCatch) {
-    return categoryMatch.eyeCatch;
+  if (categoryMatch && categoryMatch.slug) {
+    return `/images/card_${categoryMatch.slug}.jpg`;
   }
 
   return '/images/japanese_hero_banner.jpg';
 }
 
-const BLOG_DATA_VERSION = '20260915_japanese_prompts_aligned_v3';
+const BLOG_DATA_VERSION = '20260930_zenmaru_cute_card_v2';
 
 export function getStoredArticles(): BlogArticle[] {
   if (typeof window === 'undefined') return BLOG_ARTICLES;

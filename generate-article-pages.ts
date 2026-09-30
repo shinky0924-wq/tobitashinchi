@@ -183,6 +183,27 @@ async function main() {
     count++;
   }
 
+
+  // Sync functions/blog/articles.json for Cloudflare Pages Functions
+  const functionsDir = path.join(rootDir, "functions", "blog");
+  if (!fs.existsSync(functionsDir)) {
+    fs.mkdirSync(functionsDir, { recursive: true });
+  }
+
+  const manifest = articles.map((a: any) => ({
+    slug: a.slug,
+    title: a.title,
+    summary: (a.summary || a.title).replace(/[\r\n\t]/g, " ").substring(0, 160),
+    eyeCatch: a.eyeCatch.startsWith("/") ? a.eyeCatch : "/" + a.eyeCatch
+  }));
+
+  fs.writeFileSync(
+    path.join(functionsDir, "articles.json"),
+    JSON.stringify(manifest, null, 2),
+    "utf-8"
+  );
+  console.log("✅ Synced functions/blog/articles.json for Cloudflare Pages Functions");
+
   console.log(`✅ Successfully generated ${count} article static HTML pages (both .html and /index.html) with full X (Twitter) Card & OGP meta tags in dist/blog/!`);
 }
 

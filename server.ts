@@ -1090,6 +1090,75 @@ JSONスキーマ：
     });
   }
 
+
+  // Dynamic Random Article Route: /blog/random (for X/Twitter cards & user redirect)
+  app.get(["/blog/random", "/blog/random/"], async (req, res, next) => {
+    try {
+      const allArticles = memoryArticles.length > 0 ? memoryArticles : (
+        fs.existsSync(ARTICLES_PATH) ? JSON.parse(fs.readFileSync(ARTICLES_PATH, "utf-8")) : BLOG_ARTICLES
+      );
+      if (!allArticles || allArticles.length === 0) {
+        return res.redirect("/blog");
+      }
+
+      // Pick a random article
+      const randomIdx = Math.floor(Math.random() * allArticles.length);
+      const article = allArticles[randomIdx];
+
+      const baseUrl = getRequestBaseUrl(req);
+      const targetUrl = `${baseUrl}/blog/${article.slug}`;
+      const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseUrl);
+      const articleTitle = `${article.title} | 飛田ガールズ`;
+      const articleDesc = article.summary || `${article.title}についての詳しいお仕事解説記事です。`;
+
+      const userAgent = (req.headers["user-agent"] || "").toLowerCase();
+      const isBot = [
+        "twitterbot", "facebookexternalhit", "line-poker", "slackbot",
+        "discordbot", "whatsapp", "telegrambot", "applebot", "googlebot", "bingbot"
+      ].some(bot => userAgent.includes(bot));
+
+      // If regular user in browser, redirect directly
+      if (!isBot) {
+        return res.redirect(302, targetUrl);
+      }
+
+      // If crawler/bot (Twitter/X, etc.), return HTML with complete OGP / Twitter Card tags
+      let baseHtml = "";
+      if (isProd) {
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      } else {
+        const indexPath = path.join(projectRootDir, "index.html");
+        if (fs.existsSync(indexPath)) {
+          baseHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      }
+
+      if (!baseHtml) {
+        return res.redirect(302, targetUrl);
+      }
+
+      let modifiedHtml = injectMetaIntoHtml(baseHtml, {
+        title: articleTitle,
+        description: articleDesc,
+        imageUrl: fullImageUrl,
+        url: targetUrl,
+        type: "article",
+      });
+
+      modifiedHtml = modifiedHtml.replace("</head>", `<meta http-equiv="refresh" content="0;url=${targetUrl}" />\n<script>window.location.replace("${targetUrl}");</script>\n</head>`);
+
+      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.send(modifiedHtml);
+    } catch (err) {
+      console.error("Error in /blog/random:", err);
+      return res.redirect("/blog");
+    }
+  });
+
   // Dynamic OGP rendering for /blog/:slug (X / Twitter, LINE, Facebook crawlers & direct browser visits)
   app.get(["/blog/:slug", "/blog/:slug/"], async (req, res, next) => {
     try {

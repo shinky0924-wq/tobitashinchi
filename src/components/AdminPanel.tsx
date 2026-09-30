@@ -5,7 +5,9 @@ import { getStoredSiteContent, saveSiteContent, SiteContent, DEFAULT_SITE_CONTEN
 import { getConsultations, updateConsultationStatus, deleteConsultation, saveBlogArticlesToFirestore, saveSiteContentToFirestore } from '../firebase';
 import { 
   Lock, KeyRound, ShieldAlert, FileText, Plus, Trash2, Edit3, Save, 
-  ArrowLeft, RotateCcw, Copy, Check, Eye, HelpCircle, MoveUp, MoveDown, 
+  ArrowLeft, RotateCcw,
+  Share2,
+  ExternalLink, Copy, Check, Eye, HelpCircle, MoveUp, MoveDown, 
   Grid, LogOut, CheckCircle2, Sparkles, BookOpen, AlertCircle, Settings,
   Download, Archive, User, Inbox, Heart
 } from 'lucide-react';
@@ -86,6 +88,26 @@ export default function AdminPanel({ onClose, onRefreshBlog, onRefreshSite }: Ad
   const [alertMessage, setAlertMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [showCodeExport, setShowCodeExport] = useState(false);
+
+  const [randomShareCopied, setRandomShareCopied] = useState(false);
+  const handleCopyRandomUrl = () => {
+    const timestamp = Date.now();
+    const origin = typeof window !== "undefined" ? (window.location.origin.includes("localhost") ? "https://tobitashinchi.pages.dev" : window.location.origin) : "https://tobitashinchi.pages.dev";
+    const randomUrl = `${origin}/blog/random?t=${timestamp}`;
+    navigator.clipboard.writeText(randomUrl);
+    setRandomShareCopied(true);
+    setTimeout(() => setRandomShareCopied(false), 2500);
+  };
+
+  const handlePostToXRandom = () => {
+    const timestamp = Date.now();
+    const origin = typeof window !== "undefined" ? (window.location.origin.includes("localhost") ? "https://tobitashinchi.pages.dev" : window.location.origin) : "https://tobitashinchi.pages.dev";
+    const randomUrl = `${origin}/blog/random?t=${timestamp}`;
+    const text = encodeURIComponent("飛田新地のお仕事コラムをチェック！✨\n安心・高収入の求人情報やリアルな体験談まとめ\n\n#飛田新地 #高収入求人 #お仕事コラム");
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(randomUrl)}`;
+    window.open(tweetUrl, "_blank", "noopener,noreferrer");
+  };
+
 
   // AI batch generator states
   const [showAiGenerator, setShowAiGenerator] = useState(false);
@@ -1928,6 +1950,25 @@ export function saveArticles(articles: BlogArticle[]) {
                     <RotateCcw size={14} />
                     コラム初期化
                   </button>
+
+                  <div className="flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-rose-500/10 p-1 rounded-2xl border border-pink-200">
+                    <button
+                      onClick={handleCopyRandomUrl}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-white text-secondary hover:bg-pink-50 rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+                      title="毎回異なる記事画像・タイトルが表示されるランダムURLを生成してコピー"
+                    >
+                      <Share2 size={13} className="text-secondary" />
+                      {randomShareCopied ? "ランダムURLコピー完了！" : "ランダムURL生成"}
+                    </button>
+                    <button
+                      onClick={handlePostToXRandom}
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#0f1419] hover:bg-black text-white rounded-xl text-xs font-bold shadow-xs transition-all cursor-pointer"
+                      title="X（Twitter）でランダム記事をポスト"
+                    >
+                      <span>𝕏 ポスト</span>
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => setShowCodeExport(true)}
                     className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1 px-4 py-2.5 bg-[#2c1a1e] hover:bg-black text-white rounded-2xl text-xs font-bold transition-all cursor-pointer"

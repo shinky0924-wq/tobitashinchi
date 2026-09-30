@@ -163,7 +163,7 @@ async function startServer() {
 
   // Automatically sync local changes to GitHub
   const syncToGitHub = () => {
-    const repoUrl = process.env.GITHUB_REPO_URL || "https://github.com/shinky0924-wq/tobitagirls.git";
+    const repoUrl = process.env.GITHUB_REPO_URL || "https://github.com/shinky0924-wq/tobitashinchi.git";
     const username = process.env.GITHUB_USERNAME || "shinky0924-wq";
     const pat = process.env.GITHUB_PAT;
 

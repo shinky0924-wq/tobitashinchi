@@ -41,7 +41,7 @@ export async function onRequest(context) {
 
   const targetUrl = new URL(`/blog/${article.slug}`, url.origin).toString();
   const absoluteImageUrl = new URL(article.eyeCatch, url.origin).toString();
-  const pageTitle = `${article.title} | 飛田ガールズ`;
+  const pageTitle = `${article.title} | 飛田新地求人`;
   const pageDesc = article.summary || `飛田新地のお仕事コラム「${article.title}」`;
 
   // If request is from human browser, redirect immediately
@@ -62,7 +62,7 @@ export async function onRequest(context) {
   <meta property="og:description" content="${escapeHtml(pageDesc)}" />
   <meta property="og:image" content="${escapeHtml(absoluteImageUrl)}" />
   <meta property="og:url" content="${escapeHtml(request.url)}" />
-  <meta property="og:site_name" content="飛田ガールズ" />
+  <meta property="og:site_name" content="飛田新地求人" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="${escapeHtml(pageTitle)}" />
   <meta name="twitter:description" content="${escapeHtml(pageDesc)}" />

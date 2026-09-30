@@ -769,7 +769,7 @@ export default function AdminPanel({ onClose, onRefreshBlog, onRefreshSite }: Ad
     const topicPrompt = customTopic ? `特別テーマ・要望:「${customTopic}」` : "テーマは自由（未経験者向け、給料システム、身バレ対策などからバランスよく選んでください）";
     const requestedCategory = category || "all";
 
-    const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田ガールズ」のプロの編集者です。
+    const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田新地求人」のプロの編集者です。
 求職中の20代女性（未経験者が多い）が抱く、不安や疑問（身バレ対策、安全面、給料システム、実際の仕事の流れ、体入（体験入店）、生活・働き方など）を優しく丁寧に解消し、一歩踏み出す安心感を与える極めて高品質なコラム記事を日本語で作成してください。
 
 今回は、全リクエストのうち「${index + 1}番目」のコラム記事を1件だけ生成してください。
@@ -1935,7 +1935,7 @@ export function saveArticles(articles: BlogArticle[]) {
                     <BookOpen size={12} />
                     コラム管理システム (CMS)
                   </span>
-                  <h2 className="text-2xl font-bold text-[#2c1a1e] mt-1.5 font-sans">飛田ガールズ コラムダッシュボード</h2>
+                  <h2 className="text-2xl font-bold text-[#2c1a1e] mt-1.5 font-sans">飛田新地求人 コラムダッシュボード</h2>
                   <p className="text-xs text-on-surface-variant mt-1">
                     現在登録されているすべてのコラムをリアルタイムで追加・変更・削除できます。
                   </p>
@@ -2255,7 +2255,7 @@ export function saveArticles(articles: BlogArticle[]) {
                             <span className="text-[10px] text-secondary font-extrabold tracking-wider uppercase">HOW IT WORKS</span>
                             <h4 className="text-xs font-bold text-[#2c1a1e] mt-1">安心安全な自動生成</h4>
                             <p className="text-[10px] text-on-surface-variant mt-1.5 leading-relaxed">
-                              飛田ガールズのコンセプトに基づき、未経験の女性が知りたい情報、ノルマなし、飲酒強要なし、1日体入のメリットなどを自動で盛り込んだSEOに強い記事を作成します。アイキャッチ画像には本番用の厳選イラストを自動でセットします。
+                              飛田新地求人のコンセプトに基づき、未経験の女性が知りたい情報、ノルマなし、飲酒強要なし、1日体入のメリットなどを自動で盛り込んだSEOに強い記事を作成します。アイキャッチ画像には本番用の厳選イラストを自動でセットします。
                             </p>
                           </div>
                           

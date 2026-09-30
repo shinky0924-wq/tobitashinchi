@@ -76,7 +76,7 @@ export default function Footer({ currentTab, onChangeTab, onScrollToSection, onO
               </div>
               <div className="font-display font-extrabold text-xl text-secondary flex items-center gap-2 pb-2">
                 <LucideIcon name="Heart" className="fill-secondary text-secondary" size={18} />
-                飛田ガールズ (Tobita Girls)
+                飛田新地求人 (Tobita Girls)
               </div>
             </div>
             <p className="font-sans text-xs md:text-sm text-on-surface-variant leading-loose">

@@ -62,7 +62,7 @@ export default function Testimonials() {
                       <div className="w-16 h-16 md:w-20 md:h-20 rounded-[18px] md:rounded-[22px] overflow-hidden shadow-inner ring-4 ring-rose-50 relative">
                         <img 
                           src={testimonial.avatarUrl} 
-                          alt="飛田ガールズ キャスト体験者" 
+                          alt="飛田新地求人 キャスト体験者" 
                           className="w-full h-full object-cover bg-rose-50"
                           loading="lazy"
                           decoding="async"

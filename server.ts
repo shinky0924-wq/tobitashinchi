@@ -396,7 +396,7 @@ async function startServer() {
 
         for (let i = 0; i < numArticles; i++) {
           console.log(`[AI CMS] Generating article ${i + 1} of ${numArticles} via Claude...`);
-          const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田ガールズ」のプロの編集者です。
+          const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田新地求人」のプロの編集者です。
 求職中の20代女性（未経験者が多い）が抱く、不安や疑問（身バレ対策、安全面、給料システム、実際の仕事の流れ、体入（体験入店）、生活・働き方など）を優しく丁寧に解消し、一歩踏み出す安心感を与える極めて高品質なコラム記事を日本語で作成してください。
 
 今回は、全リクエストのうち「${i + 1}番目」のコラム記事を1件だけ生成してください。
@@ -481,7 +481,7 @@ JSONスキーマ：
         for (let i = 0; i < numArticles; i++) {
           console.log(`[AI CMS] Generating article ${i + 1} of ${numArticles} via Gemini...`);
           
-          const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田ガールズ」のプロの編集者です。
+          const singlePrompt = `あなたは飛田新地の女性向けサポート＆求人サイト「飛田新地求人」のプロの編集者です。
 求職中の20代女性（未経験者が多い）が抱く、不安や疑問（身バレ対策、安全面、給料システム、実際の仕事の流れ、体入（体験入店）、生活・働き方など）を優しく丁寧に解消し、一歩踏み出す安心感を与える極めて高品質なコラム記事を日本語で作成してください。
 
 今回は、全リクエストのうち「${i + 1}番目」のコラム記事を1件だけ生成してください。
@@ -1129,7 +1129,7 @@ JSONスキーマ：
       const baseUrl = getRequestBaseUrl(req);
       const targetUrl = `${baseUrl}/blog/${article.slug}`;
       const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseUrl);
-      const articleTitle = `${article.title} | 飛田ガールズ`;
+      const articleTitle = `${article.title} | 飛田新地求人`;
       const articleDesc = article.summary || `${article.title}についての詳しいお仕事解説記事です。`;
 
       const userAgent = (req.headers["user-agent"] || "").toLowerCase();
@@ -1201,7 +1201,7 @@ JSONスキーマ：
       const baseUrl = getRequestBaseUrl(req);
       const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseUrl);
       const articleUrl = `${baseUrl}/blog/${article.slug}`;
-      const articleTitle = `${article.title} | 飛田ガールズ`;
+      const articleTitle = `${article.title} | 飛田新地求人`;
       const articleDesc = article.summary || `${article.title}についての詳しいお仕事解説記事です。`;
 
       let baseHtml = "";
@@ -1263,7 +1263,7 @@ JSONスキーマ：
       }
 
       let modifiedHtml = injectMetaIntoHtml(baseHtml, {
-        title: "お仕事コラム一覧 | 飛田ガールズ【公式求人】",
+        title: "お仕事コラム一覧 | 飛田新地求人【公式求人】",
         description: "飛田新地のお仕事コラム・お役立ち情報一覧。給料システム、面接対策、身バレ防止、未経験からの働き方などを詳しく解説しています。",
         imageUrl: `${baseUrl}/images/col_ryotei_flow_1789107427433.jpg`,
         url: `${baseUrl}/blog`,

@@ -47,7 +47,7 @@ export default function ConsultationForm({ content, initialMessage, onClearIniti
       <div className="absolute inset-0 z-0">
         <img 
           src={HERO_IMAGE_URL} 
-          alt="飛田ガールズ 求人案内背景" 
+          alt="飛田新地求人 求人案内背景" 
           className="w-full h-full object-cover opacity-15"
           loading="lazy"
           decoding="async"

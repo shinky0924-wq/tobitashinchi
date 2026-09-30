@@ -67,7 +67,7 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
   upsertMeta('property', 'og:description', escapedDesc);
   upsertMeta('property', 'og:url', escapedUrl);
   upsertMeta('property', 'og:type', type);
-  upsertMeta('property', 'og:site_name', '飛田ガールズ');
+  upsertMeta('property', 'og:site_name', '飛田新地求人');
   upsertMeta('property', 'og:image', escapedImage);
   upsertMeta('property', 'og:image:secure_url', escapedImage);
   upsertMeta('property', 'og:image:type', 'image/jpeg');
@@ -142,7 +142,7 @@ async function main() {
   }
 
   const blogListHtml = injectMetaIntoHtml(baseHtml, {
-    title: 'お仕事コラム一覧 | 飛田ガールズ【公式求人】',
+    title: 'お仕事コラム一覧 | 飛田新地求人【公式求人】',
     description: '飛田新地のお仕事コラム・お役立ち情報一覧。給料システム、面接対策、身バレ防止、未経験からの働き方などを詳しく解説しています。',
     imageUrl: toAbsoluteImageUrl('/images/col_ryotei_flow_1789107427433.jpg', baseDomain),
     url: `${baseDomain}/blog`,
@@ -165,7 +165,7 @@ async function main() {
     const fullImageUrl = toAbsoluteImageUrl(article.eyeCatch, baseDomain);
 
     const articleUrl = `${baseDomain}/blog/${article.slug}`;
-    const articleTitle = `${article.title} | 飛田ガールズ`;
+    const articleTitle = `${article.title} | 飛田新地求人`;
     const articleDesc = article.summary || `${article.title}についての詳しい解説記事です。`;
 
     const articleHtml = injectMetaIntoHtml(baseHtml, {

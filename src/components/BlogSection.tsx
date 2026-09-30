@@ -66,7 +66,7 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
     if (typeof document === 'undefined') return;
 
     if (currentArticle) {
-      const pageTitle = `${currentArticle.title} | 飛田ガールズ`;
+      const pageTitle = `${currentArticle.title} | 飛田新地求人`;
       document.title = pageTitle;
 
       const metaDesc = document.querySelector('meta[name="description"]');
@@ -100,8 +100,8 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
       const twCard = document.querySelector('meta[name="twitter:card"]');
       if (twCard) twCard.setAttribute('content', 'summary_large_image');
     } else {
-      const defaultTitle = '飛田新地求人、飛田新地バイトなら【飛田ガールズ】女の子のためのサイト・高収入募集';
-      const defaultDesc = '【飛田新地求人の公式窓口】飛田新地で女の子の求人・お仕事なら「飛田ガールズ」。未経験から高収入（日給3万〜8万円）を稼げる料亭直営グループ公式採用。仲介料ゼロ・全額日払い手渡しで安心安全に働けます。24時間いつでもお気軽にご相談・ご応募いただけます。';
+      const defaultTitle = '飛田新地求人、飛田新地バイトなら【飛田新地求人】女の子のためのサイト・高収入募集';
+      const defaultDesc = '【飛田新地求人の公式窓口】飛田新地で女の子の求人・お仕事なら「飛田新地求人」。未経験から高収入（日給3万〜8万円）を稼げる料亭直営グループ公式採用。仲介料ゼロ・全額日払い手渡しで安心安全に働けます。24時間いつでもお気軽にご相談・ご応募いただけます。';
       document.title = defaultTitle;
 
       const metaDesc = document.querySelector('meta[name="description"]');

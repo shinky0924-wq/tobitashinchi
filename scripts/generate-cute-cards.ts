@@ -32,9 +32,13 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, '&apos;');
 }
 
-// Smart Japanese title wrapper into 2 or 3 lines
+// Smart Japanese title wrapper into lines
 function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: string[] } {
-  const title = rawTitle.trim();
+  let title = rawTitle.trim();
+  if (title.startsWith('【飛田新地求人】')) {
+    title = title.replace('【飛田新地求人】', '').trim();
+  }
+
   const bracketMatch = title.match(/^(【[^】]+】)(.*)$/);
 
   if (bracketMatch) {
@@ -56,12 +60,10 @@ function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: st
       if (line2.length <= 24) {
         return { tag, bodyLines: [line1, line2] };
       }
-      // If line2 still too long, split it
       const half = Math.ceil(line2.length / 2);
       return { tag, bodyLines: [line1, line2.slice(0, half), line2.slice(half)] };
     }
 
-    // Otherwise split evenly
     const half = Math.ceil(rest.length / 2);
     if (half <= 24) {
       return { tag, bodyLines: [rest.slice(0, half), rest.slice(half)] };
@@ -70,7 +72,25 @@ function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: st
     return { tag, bodyLines: [rest.slice(0, third), rest.slice(third, third * 2), rest.slice(third * 2)] };
   }
 
-  // Without bracket tag
+  // Split at first exclamation if present
+  const firstExcl = title.search(/[！!]/);
+  if (firstExcl >= 4 && firstExcl <= 22) {
+    const tag = title.slice(0, firstExcl + 1).trim();
+    const rest = title.slice(firstExcl + 1).trim();
+    if (rest.length <= 23) {
+      return { tag, bodyLines: [rest] };
+    }
+    const puncMatch = rest.search(/[！!・、\s]/);
+    if (puncMatch >= 7 && puncMatch <= 23) {
+      const l1 = rest.slice(0, puncMatch + 1).trim();
+      const l2 = rest.slice(puncMatch + 1).trim();
+      return { tag, bodyLines: [l1, l2] };
+    }
+    const half = Math.ceil(rest.length / 2);
+    return { tag, bodyLines: [rest.slice(0, half), rest.slice(half)] };
+  }
+
+  // Without bracket or exclamation
   if (title.length <= 20) {
     return { tag: null, bodyLines: [title] };
   }
@@ -190,10 +210,10 @@ function createCuteSvg(article: Article): string {
       <rect x="75" y="60" width="1050" height="510" rx="32" fill="rgba(255, 255, 255, 0.95)" stroke="#ffccd5" stroke-width="3" />
     </g>
 
-    <!-- Top Badge: ONLY 飛田新地 (Cute pill with soft sparkle) -->
+    <!-- Top Badge: 🌸 飛田新地求人 🌸 (Cute pill with soft sparkle) -->
     <g transform="translate(135, 105)">
-      <rect x="0" y="0" width="180" height="48" rx="24" fill="url(#badgeGrad)" />
-      <text x="90" y="32" font-family="Zen Maru Gothic, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2px">🌸 飛田新地</text>
+      <rect x="0" y="0" width="230" height="50" rx="25" fill="url(#badgeGrad)" />
+      <text x="115" y="33" font-family="Zen Maru Gothic, sans-serif" font-size="23" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2px">🌸 飛田新地求人 🌸</text>
     </g>
 
     <!-- Cute sparkle decoration on top right of card plate -->

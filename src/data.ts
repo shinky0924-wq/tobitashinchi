@@ -13,11 +13,11 @@ const tobitaAdvisorAvatar = '/images/japanese_staff_advisor.jpg';
 
 // ==========================================
 // 【LINE公式アカウント連携用設定】
-// あなたのLINE公式アカウントのURL（例: https://lin.ee/xxxxx）をここに貼り付けてください。
+// あなたのLINE公式アカウントのURL（例: https://line.me/R/ti/p/@600bgcxd）をここに貼り付けてください。
 // 空白（''）または初期値（'https://lin.ee/your_custom_line_id_here'）の場合は、
 // 自動的にページ下部の「お悩み相談フォーム」にスクロールする親切設計になります。
 // ==========================================
-export const LINE_OFFICIAL_URL = 'https://lin.ee/9qUXO3K';
+export const LINE_OFFICIAL_URL = 'https://line.me/R/ti/p/@600bgcxd';
 
 export const HERO_IMAGE_URL = tobitaDreamHeroBanner;
 export const CONSULTANT_AVATAR_URL = tobitaAdvisorAvatar;

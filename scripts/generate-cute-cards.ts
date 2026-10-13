@@ -35,7 +35,9 @@ function escapeXml(unsafe: string): string {
 // Smart Japanese title wrapper into lines
 function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: string[] } {
   let title = rawTitle.trim();
-  if (title.startsWith('【飛田新地求人】')) {
+  if (title.startsWith('【飛田新地 求人】')) {
+    title = title.replace('【飛田新地 求人】', '').trim();
+  } else if (title.startsWith('【飛田新地求人】')) {
     title = title.replace('【飛田新地求人】', '').trim();
   }
 
@@ -210,10 +212,10 @@ function createCuteSvg(article: Article): string {
       <rect x="75" y="60" width="1050" height="510" rx="32" fill="rgba(255, 255, 255, 0.95)" stroke="#ffccd5" stroke-width="3" />
     </g>
 
-    <!-- Top Badge: 🌸 飛田新地求人 🌸 (Cute pill with soft sparkle) -->
+    <!-- Top Badge: 🌸 飛田新地 求人 🌸 (Cute pill with soft sparkle) -->
     <g transform="translate(135, 105)">
-      <rect x="0" y="0" width="230" height="50" rx="25" fill="url(#badgeGrad)" />
-      <text x="115" y="33" font-family="Zen Maru Gothic, sans-serif" font-size="23" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2px">🌸 飛田新地求人 🌸</text>
+      <rect x="0" y="0" width="240" height="50" rx="25" fill="url(#badgeGrad)" />
+      <text x="120" y="33" font-family="Zen Maru Gothic, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2px">🌸 飛田新地 求人 🌸</text>
     </g>
 
     <!-- Cute sparkle decoration on top right of card plate -->

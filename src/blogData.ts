@@ -70,7 +70,7 @@ export function getValidArticleEyeCatch(art: { id?: string | number; slug?: stri
   return '/images/japanese_hero_banner.jpg';
 }
 
-const BLOG_DATA_VERSION = '20260930_job_title_prefix_v3';
+const BLOG_DATA_VERSION = '20261013_job_title_space_v4';
 
 export function getStoredArticles(): BlogArticle[] {
   if (typeof window === 'undefined') return BLOG_ARTICLES;

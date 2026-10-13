@@ -212,8 +212,6 @@ export default function JobRequirements() {
           </p>
           <a
             href={LINE_OFFICIAL_URL}
-            target="_blank"
-            rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-bold text-xs sm:text-sm py-2.5 px-6 rounded-full shadow-xs hover:shadow-md transition-all"
             id="requirements-line-cta"
           >

@@ -122,8 +122,6 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
           <div className="flex justify-center w-full max-w-md">
             <a
               href={LINE_OFFICIAL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
               className="w-full bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-[#06c755]/25 hover:shadow-xl hover:shadow-[#06c755]/35 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base text-center"
               id="hero-line-cta-btn"
             >

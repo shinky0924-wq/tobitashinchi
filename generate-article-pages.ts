@@ -80,7 +80,6 @@ export function injectMetaIntoHtml(baseHtml: string, meta: {
   upsertMeta('name', 'twitter:description', escapedDesc);
   upsertMeta('name', 'twitter:image', escapedImage);
   upsertMeta('name', 'twitter:image:alt', escapedTitle);
-  upsertMeta('name', 'twitter:site', '@tobitagirls');
 
   return html;
 }

@@ -178,22 +178,7 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
                           </span>
                         </div>
                         <span className="truncate block text-gray-800 group-hover:text-secondary transition-colors font-bold text-xs sm:text-sm leading-snug">
-                          {(() => {
-                            const match = art.title.match(/^(【飛田新地\s*求人】)(.*)$/);
-                            if (match) {
-                              return (
-                                <>
-                                  <span className="text-secondary font-black text-sm sm:text-base mr-1">
-                                    {match[1]}
-                                  </span>
-                                  <span className="font-semibold text-xs sm:text-sm text-gray-800">
-                                    {match[2].trim()}
-                                  </span>
-                                </>
-                              );
-                            }
-                            return art.title;
-                          })()}
+                          {art.title}
                         </span>
                       </div>
                     </div>

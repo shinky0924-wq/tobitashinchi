@@ -186,14 +186,11 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
           >
             {/* Header / Intro */}
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-secondary mb-3">
-                <BookOpen size={14} />
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-rose-100 text-secondary mb-3">
+                <BookOpen size={13} />
                 お仕事コラム & ブログ
               </span>
-              <div className="text-2xl sm:text-3xl md:text-4xl font-display font-black text-secondary tracking-wider mb-2">
-                【飛田新地 求人】
-              </div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-extrabold tracking-tight text-[#2c1a1e] leading-tight">
+              <h1 className="text-3xl md:text-4xl font-display font-bold tracking-tight text-[#2c1a1e]">
                 安心してお仕事を始めるための<br />
                 <span className="text-secondary relative inline-block">
                   完全解説ガイド
@@ -286,27 +283,8 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                           </span>
                         </div>
 
-                        <h3 className="group-hover:text-secondary transition-colors">
-                          {(() => {
-                            const match = article.title.match(/^(【飛田新地\s*求人】)(.*)$/);
-                            if (match) {
-                              return (
-                                <span className="block">
-                                  <span className="block text-secondary font-black text-xl md:text-2xl tracking-wide mb-1">
-                                    {match[1]}
-                                  </span>
-                                  <span className="text-base md:text-lg font-bold text-[#2c1a1e] leading-snug line-clamp-2 block">
-                                    {match[2].trim()}
-                                  </span>
-                                </span>
-                              );
-                            }
-                            return (
-                              <span className="text-lg font-bold text-[#2c1a1e] leading-snug line-clamp-2 block">
-                                {article.title}
-                              </span>
-                            );
-                          })()}
+                        <h3 className="text-lg font-bold text-[#2c1a1e] leading-snug group-hover:text-secondary transition-colors line-clamp-2">
+                          {article.title}
                         </h3>
 
                         <p className="mt-3 text-sm text-on-surface-variant line-clamp-3 leading-relaxed">
@@ -503,27 +481,8 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                 </span>
               </div>
 
-              <h1 className="font-display font-bold leading-snug text-[#2c1a1e] tracking-tight">
-                {(() => {
-                  const match = currentArticle!.title.match(/^(【飛田新地\s*求人】)(.*)$/);
-                  if (match) {
-                    return (
-                      <>
-                        <span className="block text-secondary font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-wide mb-2">
-                          {match[1]}
-                        </span>
-                        <span className="block text-xl sm:text-2xl md:text-3xl lg:text-4xl text-[#2c1a1e]">
-                          {match[2].trim()}
-                        </span>
-                      </>
-                    );
-                  }
-                  return (
-                    <span className="text-2xl md:text-3xl lg:text-4xl">
-                      {currentArticle!.title}
-                    </span>
-                  );
-                })()}
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold leading-snug text-[#2c1a1e] tracking-tight">
+                {currentArticle!.title}
               </h1>
 
               {/* Author Card inside detail */}

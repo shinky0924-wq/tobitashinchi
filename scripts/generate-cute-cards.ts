@@ -32,9 +32,16 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, '&apos;');
 }
 
+// Strip all emojis from text
+function stripEmojis(text: string): string {
+  return text
+    .replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F100}-\u{1F1FF}\u{1F200}-\u{1F2FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}]/gu, '')
+    .trim();
+}
+
 // Smart Japanese title wrapper into lines
 function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: string[] } {
-  let title = rawTitle.trim();
+  let title = stripEmojis(rawTitle.trim());
   if (title.startsWith('【飛田新地 求人】')) {
     title = title.replace('【飛田新地 求人】', '').trim();
   } else if (title.startsWith('【飛田新地求人】')) {
@@ -44,8 +51,8 @@ function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: st
   const bracketMatch = title.match(/^(【[^】]+】)(.*)$/);
 
   if (bracketMatch) {
-    const tag = bracketMatch[1];
-    let rest = bracketMatch[2].trim();
+    const tag = stripEmojis(bracketMatch[1]);
+    let rest = stripEmojis(bracketMatch[2].trim());
     if (rest.length === 0) {
       return { tag, bodyLines: [] };
     }
@@ -108,6 +115,120 @@ function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: st
   return { tag: null, bodyLines: [title.slice(0, third), title.slice(third, third * 2), title.slice(third * 2)] };
 }
 
+// Color theme system: 記事ごとに枠やバッジの色合いを変えるバリエーションパレット
+interface ColorTheme {
+  name: string;
+  stroke: string;
+  strokeWidth: number;
+  badgeStart: string;
+  badgeEnd: string;
+  tagColor: string;
+  accentColor: string;
+}
+
+const COLOR_THEMES: ColorTheme[] = [
+  // 1. Sakura Rose (華やかピンク)
+  {
+    name: 'sakura-rose',
+    stroke: '#ff9ebb',
+    strokeWidth: 5,
+    badgeStart: '#ff3366',
+    badgeEnd: '#ff6699',
+    tagColor: '#e6005c',
+    accentColor: '#ff6699'
+  },
+  // 2. Lavender Violet (上品ラベンダーパープル)
+  {
+    name: 'lavender-violet',
+    stroke: '#c8a2e6',
+    strokeWidth: 5,
+    badgeStart: '#8a4baf',
+    badgeEnd: '#b370d9',
+    tagColor: '#7b329f',
+    accentColor: '#9d5fc7'
+  },
+  // 3. Peach Coral (優しいコーラルピーチ)
+  {
+    name: 'peach-coral',
+    stroke: '#ffb088',
+    strokeWidth: 5,
+    badgeStart: '#f35a22',
+    badgeEnd: '#ff8a5c',
+    tagColor: '#d64109',
+    accentColor: '#ff7744'
+  },
+  // 4. Ruby Wine (シックなルビーワイン)
+  {
+    name: 'ruby-wine',
+    stroke: '#e6859e',
+    strokeWidth: 5,
+    badgeStart: '#b0193e',
+    badgeEnd: '#d83a63',
+    tagColor: '#a10f32',
+    accentColor: '#c82650'
+  },
+  // 5. Champagne Gold (華やかゴールド)
+  {
+    name: 'champagne-gold',
+    stroke: '#e5bb68',
+    strokeWidth: 5,
+    badgeStart: '#d48b11',
+    badgeEnd: '#f4b23d',
+    tagColor: '#b87204',
+    accentColor: '#e0971b'
+  },
+  // 6. Aqua Marine (爽やかアクアブルー)
+  {
+    name: 'aqua-marine',
+    stroke: '#8cd5e8',
+    strokeWidth: 5,
+    badgeStart: '#0292b7',
+    badgeEnd: '#38bdf8',
+    tagColor: '#0369a1',
+    accentColor: '#0ea5e9'
+  },
+  // 7. Emerald Mint (清潔感ミントグリーン)
+  {
+    name: 'emerald-mint',
+    stroke: '#82d9b8',
+    strokeWidth: 5,
+    badgeStart: '#0d9466',
+    badgeEnd: '#2ecc71',
+    tagColor: '#08734e',
+    accentColor: '#10b981'
+  },
+  // 8. Dusty Mauve (大人くすみモーヴ)
+  {
+    name: 'dusty-mauve',
+    stroke: '#d49cb0',
+    strokeWidth: 5,
+    badgeStart: '#993d63',
+    badgeEnd: '#c4628a',
+    tagColor: '#842f53',
+    accentColor: '#b04d76'
+  },
+  // 9. Sunset Apricot (温かみアプリコット)
+  {
+    name: 'sunset-apricot',
+    stroke: '#fca57c',
+    strokeWidth: 5,
+    badgeStart: '#e04a10',
+    badgeEnd: '#fb713b',
+    tagColor: '#be3804',
+    accentColor: '#f95716'
+  },
+  // 10. Royal Indigo (高貴なロイヤルパープル)
+  {
+    name: 'royal-indigo',
+    stroke: '#a8b4e8',
+    strokeWidth: 5,
+    badgeStart: '#4338ca',
+    badgeEnd: '#6366f1',
+    tagColor: '#3730a3',
+    accentColor: '#4f46e5'
+  }
+];
+
 // Find appropriate topic background image
 function selectBackgroundImage(article: Article): string {
   const text = `${article.slug} ${article.title} ${article.categoryLabel || ''} ${JSON.stringify(article.tags || [])}`.toLowerCase();
@@ -158,14 +279,17 @@ function selectBackgroundImage(article: Article): string {
 function createCuteSvg(article: Article): string {
   const { tag, bodyLines } = wrapTitleToLines(article.title);
 
+  const numId = typeof article.id === 'number' ? article.id : parseInt(String(article.id).replace(/\D/g, ''), 10) || 1;
+  const theme = COLOR_THEMES[numId % COLOR_THEMES.length];
+
   // Calculate layout coordinates
-  let contentY = 220;
+  let contentY = 224;
   let tagSvg = '';
   
   if (tag) {
     const escapedTag = escapeXml(tag);
     tagSvg = `
-      <text x="140" y="${contentY}" font-family="Zen Maru Gothic, sans-serif" font-size="44" font-weight="bold" fill="#e63963" letter-spacing="1.5px">
+      <text x="140" y="${contentY}" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="44" font-weight="bold" fill="${theme.tagColor}" letter-spacing="1.5px">
         ${escapedTag}
       </text>
     `;
@@ -179,21 +303,21 @@ function createCuteSvg(article: Article): string {
     .map((line, idx) => {
       const y = contentY + idx * lineSpacing;
       return `
-        <text x="140" y="${y}" font-family="Zen Maru Gothic, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#25161d" letter-spacing="0.8px">
+        <text x="140" y="${y}" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#25161d" letter-spacing="0.8px">
           ${escapeXml(line)}
         </text>
       `;
     })
     .join('\n');
 
-  const bottomY = Math.min(contentY + bodyLines.length * lineSpacing + 20, 500);
+  const bottomY = Math.min(contentY + bodyLines.length * lineSpacing + 20, 505);
 
   return `
   <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <linearGradient id="badgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#ff4b78" />
-        <stop offset="100%" stop-color="#ff7597" />
+      <linearGradient id="badgeGrad_${numId}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${theme.badgeStart}" />
+        <stop offset="100%" stop-color="${theme.badgeEnd}" />
       </linearGradient>
       <linearGradient id="bgVignette" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%" stop-color="rgba(18, 8, 14, 0.40)" />
@@ -207,31 +331,26 @@ function createCuteSvg(article: Article): string {
     <!-- Warm darkening overlay on background photo -->
     <rect width="1200" height="630" fill="url(#bgVignette)" />
 
-    <!-- Cute Card Plate with Soft Shadow and Rounded Corners -->
+    <!-- Card Plate with Dynamic Frame Color per article (絵文字なし・角丸プレート) -->
     <g filter="url(#cardShadow)">
-      <rect x="75" y="60" width="1050" height="510" rx="32" fill="rgba(255, 255, 255, 0.95)" stroke="#ffccd5" stroke-width="3" />
+      <rect x="75" y="60" width="1050" height="510" rx="32" fill="rgba(255, 255, 255, 0.96)" stroke="${theme.stroke}" stroke-width="${theme.strokeWidth}" />
     </g>
 
-    <!-- Top Badge: 🌸 飛田新地 求人 🌸 (Cute pill with soft sparkle) -->
-    <g transform="translate(135, 105)">
-      <rect x="0" y="0" width="240" height="50" rx="25" fill="url(#badgeGrad)" />
-      <text x="120" y="33" font-family="Zen Maru Gothic, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="2px">🌸 飛田新地 求人 🌸</text>
+    <!-- Top Badge: 飛田新地 求人 (大文字・絵文字完全削除・高視認性) -->
+    <g transform="translate(135, 95)">
+      <rect x="0" y="0" width="360" height="68" rx="34" fill="url(#badgeGrad_${numId})" />
+      <text x="180" y="47" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3.5px">飛田新地 求人</text>
     </g>
 
-    <!-- Cute sparkle decoration on top right of card plate -->
-    <g transform="translate(1030, 110)">
-      <text font-family="Zen Maru Gothic, sans-serif" font-size="26" fill="#ff7597" text-anchor="middle">✨</text>
-    </g>
-
-    <!-- Title: ONLY 飛田新地 + タイトル -->
+    <!-- Title: ONLY 飛田新地 + タイトル (絵文字なし) -->
     ${tagSvg}
     ${linesSvg}
 
-    <!-- Cute decorative accent line at bottom of card -->
+    <!-- Decorative accent line at bottom of card -->
     <g transform="translate(140, ${bottomY})">
-      <circle cx="0" cy="0" r="4.5" fill="#ff8da7" />
-      <line x1="14" y1="0" x2="200" y2="0" stroke="#ff8da7" stroke-width="3" stroke-linecap="round" />
-      <circle cx="214" cy="0" r="4.5" fill="#ff8da7" />
+      <circle cx="0" cy="0" r="4.5" fill="${theme.accentColor}" />
+      <line x1="14" y1="0" x2="200" y2="0" stroke="${theme.accentColor}" stroke-width="3" stroke-linecap="round" />
+      <circle cx="214" cy="0" r="4.5" fill="${theme.accentColor}" />
     </g>
   </svg>
   `;

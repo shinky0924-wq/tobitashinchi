@@ -289,7 +289,7 @@ function createCuteSvg(article: Article): string {
   if (tag) {
     const escapedTag = escapeXml(tag);
     tagSvg = `
-      <text x="140" y="${contentY}" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="44" font-weight="bold" fill="${theme.tagColor}" letter-spacing="1.5px">
+      <text x="140" y="${contentY}" font-family="Noto Sans CJK JP, sans-serif" font-size="44" font-weight="bold" fill="${theme.tagColor}" letter-spacing="1.5px">
         ${escapedTag}
       </text>
     `;
@@ -303,7 +303,7 @@ function createCuteSvg(article: Article): string {
     .map((line, idx) => {
       const y = contentY + idx * lineSpacing;
       return `
-        <text x="140" y="${y}" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#25161d" letter-spacing="0.8px">
+        <text x="140" y="${y}" font-family="Noto Sans CJK JP, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#25161d" letter-spacing="0.8px">
           ${escapeXml(line)}
         </text>
       `;
@@ -339,7 +339,7 @@ function createCuteSvg(article: Article): string {
     <!-- Top Badge: 飛田新地 求人 (大文字・絵文字完全削除・高視認性) -->
     <g transform="translate(135, 95)">
       <rect x="0" y="0" width="360" height="68" rx="34" fill="url(#badgeGrad_${numId})" />
-      <text x="180" y="47" font-family="Zen Maru Gothic, Noto Sans CJK JP, Hiragino Sans, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3.5px">飛田新地 求人</text>
+      <text x="180" y="47" font-family="Noto Sans CJK JP, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3.5px">飛田新地 求人</text>
     </g>
 
     <!-- Title: ONLY 飛田新地 + タイトル (絵文字なし) -->

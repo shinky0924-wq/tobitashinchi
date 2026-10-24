@@ -4,7 +4,7 @@
  */
 
 import LucideIcon from './LucideIcon';
-import { LINE_OFFICIAL_URL } from '../data';
+import { LINE_OFFICIAL_URL, getSmartLineUrl, openSmartLine } from '../data';
 
 export default function JobRequirements() {
   const specs = [
@@ -211,8 +211,9 @@ export default function JobRequirements() {
             書類の取得方法やシフトについてなど、ご不明な点はお気軽にLINEでお問い合わせください。
           </p>
           <a
-            href={LINE_OFFICIAL_URL}
-            className="inline-flex items-center justify-center gap-2 bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-bold text-xs sm:text-sm py-2.5 px-6 rounded-full shadow-xs hover:shadow-md transition-all"
+            href={getSmartLineUrl()}
+            onClick={openSmartLine}
+            className="inline-flex items-center justify-center gap-2 bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-bold text-xs sm:text-sm py-2.5 px-6 rounded-full shadow-xs hover:shadow-md transition-all cursor-pointer"
             id="requirements-line-cta"
           >
             <LucideIcon name="MessageCircle" size={16} className="fill-white text-white" />

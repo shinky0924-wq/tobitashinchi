@@ -13,11 +13,53 @@ const tobitaAdvisorAvatar = '/images/japanese_staff_advisor.jpg';
 
 // ==========================================
 // 【LINE公式アカウント連携用設定】
-// あなたのLINE公式アカウントのURL（例: https://line.me/R/ti/p/@600bgcxd）をここに貼り付けてください。
-// 空白（''）または初期値（'https://lin.ee/your_custom_line_id_here'）の場合は、
-// 自動的にページ下部の「お悩み相談フォーム」にスクロールする親切設計になります。
+// スマホ（iOS / Android）: line://ti/p/@600bgcxd (LINEアプリ直接起動)
+// PC: https://line.me/R/ti/p/@600bgcxd (Webブラウザ用友だち追加画面)
 // ==========================================
+export const LINE_OFFICIAL_URL_PC = 'https://line.me/R/ti/p/@600bgcxd';
+export const LINE_OFFICIAL_SCHEME_MOBILE = 'line://ti/p/@600bgcxd';
 export const LINE_OFFICIAL_URL = 'https://line.me/R/ti/p/@600bgcxd';
+
+/**
+ * 閲覧端末に応じてURLを自動判定:
+ * スマホ → line://ti/p/@600bgcxd (直接アプリ起動)
+ * PC → https://line.me/R/ti/p/@600bgcxd (ブラウザ)
+ */
+export function getSmartLineUrl(): string {
+  if (typeof window === 'undefined') return LINE_OFFICIAL_URL_PC;
+  const ua = navigator.userAgent || '';
+  const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(ua);
+  return isMobile ? LINE_OFFICIAL_SCHEME_MOBILE : LINE_OFFICIAL_URL_PC;
+}
+
+/**
+ * LINEクリックハンドラ:
+ * スマホの場合は直接アプリを開き、万が一アプリ未導入等の場合はWeb版へ自動フォールバック
+ * PCの場合は別タブで開く
+ */
+export function openSmartLine(e?: React.MouseEvent) {
+  if (typeof window === 'undefined') return;
+  const ua = navigator.userAgent || '';
+  const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(ua);
+
+  if (isMobile) {
+    if (e) {
+      e.preventDefault();
+    }
+    window.location.href = LINE_OFFICIAL_SCHEME_MOBILE;
+
+    const timer = setTimeout(() => {
+      window.location.href = LINE_OFFICIAL_URL_PC;
+    }, 1500);
+
+    window.addEventListener('pagehide', () => clearTimeout(timer), { once: true });
+    window.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        clearTimeout(timer);
+      }
+    });
+  }
+}
 
 export const HERO_IMAGE_URL = tobitaDreamHeroBanner;
 export const CONSULTANT_AVATAR_URL = tobitaAdvisorAvatar;

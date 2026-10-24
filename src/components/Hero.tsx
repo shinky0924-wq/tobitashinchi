@@ -5,7 +5,7 @@
 
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { HERO_IMAGE_URL, LINE_OFFICIAL_URL } from '../data';
+import { HERO_IMAGE_URL, LINE_OFFICIAL_URL, getSmartLineUrl, openSmartLine } from '../data';
 import LucideIcon from './LucideIcon';
 import { SiteContent } from '../siteContent';
 import { BlogArticle, getValidArticleEyeCatch } from '../blogData';
@@ -121,7 +121,8 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
           {/* Main Action Buttons */}
           <div className="flex justify-center w-full max-w-md">
             <a
-              href={LINE_OFFICIAL_URL}
+              href={getSmartLineUrl()}
+              onClick={openSmartLine}
               className="w-full bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-[#06c755]/25 hover:shadow-xl hover:shadow-[#06c755]/35 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base text-center"
               id="hero-line-cta-btn"
             >
@@ -177,7 +178,22 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
                           </span>
                         </div>
                         <span className="truncate block text-gray-800 group-hover:text-secondary transition-colors font-bold text-xs sm:text-sm leading-snug">
-                          {art.title}
+                          {(() => {
+                            const match = art.title.match(/^(【飛田新地\s*求人】)(.*)$/);
+                            if (match) {
+                              return (
+                                <>
+                                  <span className="text-secondary font-black text-sm sm:text-base mr-1">
+                                    {match[1]}
+                                  </span>
+                                  <span className="font-semibold text-xs sm:text-sm text-gray-800">
+                                    {match[2].trim()}
+                                  </span>
+                                </>
+                              );
+                            }
+                            return art.title;
+                          })()}
                         </span>
                       </div>
                     </div>

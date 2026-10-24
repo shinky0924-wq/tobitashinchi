@@ -4,7 +4,7 @@
  */
 
 import { useState, useRef, useEffect } from 'react';
-import { HERO_IMAGE_URL, LINE_OFFICIAL_URL } from '../data';
+import { HERO_IMAGE_URL, LINE_OFFICIAL_URL, getSmartLineUrl, openSmartLine } from '../data';
 import LucideIcon from './LucideIcon';
 import { SiteContent } from '../siteContent';
 
@@ -132,7 +132,8 @@ export default function ConsultationForm({ content, initialMessage, onClearIniti
               </p>
               
               <a
-                href={LINE_OFFICIAL_URL}
+                href={getSmartLineUrl()}
+                onClick={openSmartLine}
                 className="w-full font-sans font-extrabold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-3 cursor-pointer text-white bg-[#06c755] hover:bg-[#05b34c] hover:shadow-[#06c755]/40 hover:-translate-y-0.5 shadow-[#06c755]/30 text-base md:text-lg"
               >
                 <LucideIcon name="MessageCircle" className="fill-white text-white w-6 h-6" size={24} />

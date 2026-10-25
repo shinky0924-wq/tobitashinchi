@@ -1951,6 +1951,25 @@ export function saveArticles(articles: BlogArticle[]) {
                     コラム初期化
                   </button>
 
+                  <a
+                    href="/tobitashinchi_articles.xlsx"
+                    download="飛田新地求人_お仕事コラム記事一覧.xlsx"
+                    className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    title="記事一覧（URL・タイトル・概要）をエクセル形式でダウンロード"
+                  >
+                    <Download size={14} />
+                    記事一覧エクセル (.xlsx)
+                  </a>
+                  <a
+                    href="/tobitashinchi_articles.csv"
+                    download="飛田新地求人_お仕事コラム記事一覧.csv"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-2xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+                    title="CSV形式でダウンロード"
+                  >
+                    <Download size={13} />
+                    CSV
+                  </a>
+
                   <div className="flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-rose-500/10 p-1 rounded-2xl border border-pink-200">
                     <button
                       onClick={handleCopyRandomUrl}

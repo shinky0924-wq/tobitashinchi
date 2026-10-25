@@ -161,6 +161,27 @@ async function startServer() {
     app.use(express.static(publicDir));
   }
 
+  // Excel and CSV download endpoints
+  app.get(["/tobitashinchi_articles.xlsx", "/飛田新地求人_お仕事コラム記事一覧.xlsx", "/api/download/articles-excel"], (req, res) => {
+    const excelPath = path.join(projectRootDir, "public", "tobitashinchi_articles.xlsx");
+    if (fs.existsSync(excelPath)) {
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", 'attachment; filename="tobitashinchi_articles.xlsx"');
+      return res.sendFile(excelPath);
+    }
+    res.status(404).send("File not found");
+  });
+
+  app.get(["/tobitashinchi_articles.csv", "/飛田新地求人_お仕事コラム記事一覧.csv", "/api/download/articles-csv"], (req, res) => {
+    const csvPath = path.join(projectRootDir, "public", "tobitashinchi_articles.csv");
+    if (fs.existsSync(csvPath)) {
+      res.setHeader("Content-Type", "text/csv; charset=utf-8");
+      res.setHeader("Content-Disposition", 'attachment; filename="tobitashinchi_articles.csv"');
+      return res.sendFile(csvPath);
+    }
+    res.status(404).send("File not found");
+  });
+
   const DATA_DIR = path.join(projectRootDir, "data");
 
   // Automatically sync local changes to GitHub

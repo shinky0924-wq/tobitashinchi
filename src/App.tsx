@@ -123,7 +123,7 @@ export default function App() {
       }
 
       // 2. Fallback to API if not in Firestore
-      const res = await fetch('/api/cms/articles');
+      const res = await fetch('/api/cms/articles?v=20261025_fixed');
       if (res.ok) {
         const data = await res.json();
         const validatedArticles = (data as BlogArticle[]).map(art => ({

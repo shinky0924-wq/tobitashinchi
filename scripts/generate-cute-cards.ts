@@ -371,6 +371,7 @@ async function main() {
   for (const article of articles) {
     const slug = article.slug;
     const cardFileName = `card_${slug}.jpg`;
+    const cardFileNameV2 = `card_${slug}_v2.jpg`;
     const bgImagePath = selectBackgroundImage(article);
 
     // 1. Resize/crop background photo to 1200x630
@@ -388,13 +389,15 @@ async function main() {
       .jpeg({ quality: 88, mozjpeg: true })
       .toBuffer();
 
-    // 4. Save to all relevant target locations
-    fs.writeFileSync(path.join(publicImagesDir, cardFileName), cardBuffer);
-    fs.writeFileSync(path.join(publicAssetsImagesDir, cardFileName), cardBuffer);
-    fs.writeFileSync(path.join(srcImagesDir, cardFileName), cardBuffer);
+    // 4. Save to all relevant target locations (both v2 and standard)
+    for (const fn of [cardFileName, cardFileNameV2]) {
+      fs.writeFileSync(path.join(publicImagesDir, fn), cardBuffer);
+      fs.writeFileSync(path.join(publicAssetsImagesDir, fn), cardBuffer);
+      fs.writeFileSync(path.join(srcImagesDir, fn), cardBuffer);
+    }
 
     // 5. Ensure article eyeCatch points to the new card
-    article.eyeCatch = `/images/${cardFileName}`;
+    article.eyeCatch = `/images/${cardFileNameV2}`;
     count++;
     if (count % 10 === 0) {
       console.log(`Generated ${count}/100 cards...`);

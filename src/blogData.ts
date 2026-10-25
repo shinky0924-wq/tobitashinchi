@@ -37,16 +37,16 @@ export const BLOG_CATEGORIES = [
 export const BLOG_ARTICLES: BlogArticle[] = blogArticlesJson as BlogArticle[];
 
 export function getValidArticleEyeCatch(art: { id?: string | number; slug?: string; category?: string; eyeCatch?: string }): string {
-  // If slug matches, return dedicated cute card directly
+  // If slug matches, return dedicated cute card directly (v2 for cache-busting)
   if (art && art.slug) {
-    return `/images/card_${art.slug}.jpg`;
+    return `/images/card_${art.slug}_v2.jpg`;
   }
 
-  // If art matches a default article ID, return dedicated cute card
+  // If art matches a default article ID, return dedicated cute card (v2)
   if (art && art.id !== undefined) {
     const defaultMatch = BLOG_ARTICLES.find(d => String(d.id) === String(art.id));
     if (defaultMatch && defaultMatch.slug) {
-      return `/images/card_${defaultMatch.slug}.jpg`;
+      return `/images/card_${defaultMatch.slug}_v2.jpg`;
     }
   }
 

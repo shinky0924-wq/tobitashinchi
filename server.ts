@@ -139,7 +139,7 @@ async function startServer() {
     for (const dir of possibleImageDirs) {
       const candidate = path.join(dir, filename);
       if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
-        res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
         return res.sendFile(candidate);
       }
     }

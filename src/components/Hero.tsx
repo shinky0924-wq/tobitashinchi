@@ -5,7 +5,7 @@
 
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { HERO_IMAGE_URL, LINE_OFFICIAL_URL, getSmartLineUrl, openSmartLine } from '../data';
+import { HERO_IMAGE_URL } from '../data';
 import LucideIcon from './LucideIcon';
 import { SiteContent } from '../siteContent';
 import { BlogArticle, getValidArticleEyeCatch } from '../blogData';
@@ -118,19 +118,6 @@ export default function Hero({ content, onCtaclick, onBlogClick, articles, onArt
           transition={{ duration: 0.5, delay: 0.4 }}
           id="hero-cta-container"
         >
-          {/* Main Action Buttons */}
-          <div className="flex justify-center w-full max-w-md">
-            <a
-              href={getSmartLineUrl()}
-              onClick={openSmartLine}
-              className="w-full bg-[#06c755] hover:bg-[#05b34c] text-white font-sans font-extrabold py-3.5 px-6 rounded-2xl shadow-lg shadow-[#06c755]/25 hover:shadow-xl hover:shadow-[#06c755]/35 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 cursor-pointer text-sm sm:text-base text-center"
-              id="hero-line-cta-btn"
-            >
-              <LucideIcon name="MessageCircle" className="fill-white text-white w-5 h-5 shrink-0" size={20} />
-              <span>LINEで今すぐ相談する</span>
-            </a>
-          </div>
-
           {/* PICK UP RECOMMEND 人気のお仕事コラム（おすすめ5選） */}
           {recommendedArticles.length > 0 && (
             <div className="w-full text-left bg-gradient-to-br from-white to-[#fffbfd] p-5 md:p-6 rounded-3xl border border-secondary/20 shadow-xl shadow-rose-100/30 relative mt-2" id="hero-random-columns">

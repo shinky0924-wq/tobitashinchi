@@ -18,6 +18,7 @@ import JobRequirements from './components/JobRequirements';
 import ConsultationForm from './components/ConsultationForm';
 import Footer from './components/Footer';
 import BlogSection from './components/BlogSection';
+import FixedBottomCta from './components/FixedBottomCta';
 import { getStoredArticles, BlogArticle, BLOG_ARTICLES, getValidArticleEyeCatch } from './blogData';
 import { getStoredSiteContent, SiteContent, DEFAULT_SITE_CONTENT } from './siteContent';
 import { getBlogArticlesFromFirestore, getSiteContentFromFirestore, saveBlogArticlesToFirestore, saveSiteContentToFirestore } from './firebase';
@@ -274,6 +275,7 @@ export default function App() {
                ========================================== */
             <motion.div
               key="recruit-page"
+              className="pb-20 sm:pb-24"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -398,6 +400,11 @@ export default function App() {
         onOpenAdmin={() => setCurrentTab('admin')}
         isAdminMode={isAdminMode}
       />
+
+      {/* Bottom Sticky LINE Consultation Button */}
+      {currentTab === 'recruit' && (
+        <FixedBottomCta />
+      )}
     </div>
   );
 }

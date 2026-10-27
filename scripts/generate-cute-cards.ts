@@ -39,83 +39,136 @@ function stripEmojis(text: string): string {
     .trim();
 }
 
-// Smart Japanese title wrapper into lines
-function wrapTitleToLines(rawTitle: string): { tag: string | null; bodyLines: string[] } {
-  let title = stripEmojis(rawTitle.trim());
-  if (title.startsWith('【飛田新地 求人】')) {
-    title = title.replace('【飛田新地 求人】', '').trim();
-  } else if (title.startsWith('【飛田新地求人】')) {
-    title = title.replace('【飛田新地求人】', '').trim();
+// Curated 2-3 lines for all 100 articles (strictly <= 18 characters per line)
+const ARTICLE_CARD_LINES: Record<number, string[]> = {
+  1: ["仕事内容を徹底解説！", "特別な技術は一切不要！", "完全受け身で即日デビューできる理由"],
+  2: ["給料システム徹底解説！", "15分5,000円の仕組みと計算式", "全額日払いで高収入が残る理由"],
+  3: ["身バレ・顔バレ防止の極意！", "会社や家族に100%知られない！", "現役キャストが実践する8大対策"],
+  4: ["駅近マンション寮完備！", "家具家電付き・即日入居OK！", "出稼ぎ＆一人暮らしの快適個室寮"],
+  5: ["応募資格・面接の必要書類！", "本籍地記載の住民票が必須な理由と", "採用ポイント徹底解説"],
+  6: ["体験入店と面接の流れ！", "喫茶店面接から即日退店ルール・", "全額日払いまでの完全手順"],
+  7: ["本音で暴露！", "飛田新地で働くメリット・デメリット", "風俗未経験者が知るべき真実"],
+  8: ["メイン通りと青春通りの違い！", "採用基準・ルックス・平均日給と", "働きやすさを徹底比較"],
+  9: ["衛生管理・性病予防の徹底！", "キスNG・完全ゴム着用！", "女の子の体を守る安心衛生ルール"],
+  10: ["シフト・短時間勤務の働き方！", "昼番・夜番の2交代制と", "固定シフトで賢く稼ぐコツ"],
+  11: ["最短1ヶ月からスタート！", "短期集中でがっつり貯金！", "「今すぐお金が必要」を叶える稼働法"],
+  12: ["料亭の安全管理！", "飛田新地の客層が良い理由と", "女の子最優先の安心警備体制"],
+  13: ["和装・メイク術を伝授！", "自分に一番似合うスタイルは？", "無料レンタル着物とお仕事メイク"],
+  14: ["週1日・週末だけでもOK！", "OL・会社員や学生さん必見！", "お昼だけ・週末だけの掛け持ちシフト"],
+  15: ["心に寄り添うサポート！", "悩みは一人で抱え込まないで！", "現役キャストが教えるスタッフの頼り方"],
+  16: ["徹底分析！検索ワード解決", "飛田新地で働きたい女性の", "不安と疑問を先回り解決！"],
+  17: ["完全密着！飛田新地の1日！", "出勤からお仕事、退勤までの", "リアルな流れを徹底レポート"],
+  18: ["おばちゃんは怖い？味方？", "飛田新地「売り子さん」の本当の役割と", "良好な関係作りのコツ"],
+  19: ["和装マジックで可愛くなれる！", "自分史上いちばんの変身！", "貸出衣装とヘアメイクのこだわり"],
+  20: ["身バレ対策の鉄則を公開！", "家族・友達・会社に知られずに", "働き続けるための5つの鉄則"],
+  21: ["年齢・ルックスのリアル！", "18歳から40代まで！", "求められるキャストの条件とは？"],
+  22: ["防犯・安全マニュアル！", "お酒不要でトラブルなし！", "女の子を守り抜く鉄壁セキュリティ"],
+  23: ["副業・OL・学生さんへ！", "週1日・短時間勤務でも", "効率的に高収入を稼ぐテクニック"],
+  24: ["体験入店の完全ガイド！", "面接の服装から必要な持ち物、", "当日の流れまでを徹底解説！"],
+  25: ["ストレスを溜めないメンタルケア！", "心穏やかに楽しく稼ぐための", "現役キャストのセルフケア術"],
+  26: ["未経験から人気キャストへ！", "指名・リピートが途切れない！", "誰でも実践できる3つの極秘接客術"],
+  27: ["憧れの美容代・自分投資に！", "飛田新地バイトで叶える", "自分磨き＆ハイブランド購入計画"],
+  28: ["女子大生・専門学生必見！", "親に内緒で卒業旅行＆奨学金返済！", "学業と両立するスマートな働き方"],
+  29: ["20代で1000万円貯金！", "目標額を最速で達成した", "現役キャストの貯金術とモチベーション"],
+  30: ["友達同士の応募も大歓迎！", "1人じゃ不安なあなたへ！", "友達と一緒に面接・体入するメリット"],
+  31: ["大阪・天王寺エリアの魅力！", "お仕事前後に楽しめる！", "おしゃれカフェ＆お買い物スポット"],
+  32: ["入店祝い金・各種手当の裏側", "求人サイトでよく見るお祝い金は", "本当にもらえる？お得な待遇解説"],
+  33: ["20代前半の強みを活かす！", "未経験から最速で稼ぎ頭になる", "愛され笑顔と愛嬌の磨き方"],
+  34: ["20代後半からのリスタート！", "「今さら遅い？」なんてない！", "大人の色気と落ち着きで稼ぐノウハウ"],
+  35: ["自立した女性への第一歩！", "飛田新地バイトをステップに", "経済的自立と夢を叶えた女性たち"],
+  36: ["面接の裏ワザを大公開！", "不採用にならないために！", "面接官が明日から来てほしいと思うコツ"],
+  37: ["マンション寮生活のリアル！", "飛田新地周辺の個室寮はどんな感じ？", "家具家電付き・即入居可能な秘密"],
+  38: ["お昼のシフトがアツい！", "12:00〜18:00の昼勤務で", "効率よく稼げる理由とメリット"],
+  39: ["心と体のセルフケア！", "お仕事の疲れを翌日に残さない！", "愛用のデトックス＆リラックス法"],
+  40: ["和装初心者でも安心！", "5分でパッと着こなせる！", "簡単で可愛い着物・浴衣の仕組み"],
+  41: ["キャバクラ・風俗との違い！", "夜職未経験者が口を揃えて", "「飛田が一番働きやすい」納得の理由"],
+  42: ["20代のための税金対策！", "年間いくらから納税が必要？", "税務署からお尋ねが来ない基礎知識"],
+  43: ["モチベーションを保つコツ！", "「なんとなく勤務」はもったいない！", "夢を最速で叶える目標ロードマップ"],
+  44: ["履歴書不要・即日体験入店！", "持ち物はスマホと身分証だけ！", "今週末にスタートできるスピード体験"],
+  45: ["スタッフって怖いの？！", "直営料亭グループのスタッフが", "優しくてアットホームな理由"],
+  46: ["短期でサクッと稼ぐ！", "リゾートバイト感覚で飛田新地へ！", "1ヶ月限定で稼ぐ地方女子の選択肢"],
+  47: ["これで安心！身バレ防止策", "飛田新地で知られずに働く！", "徹底したプライバシー保護の秘訣"],
+  48: ["身バレが不安なあなたへ！", "プロが教える徹底対策4選！", "安心して働ける安心サポート体制"],
+  49: ["身バレ防止の秘訣まとめ！", "飛田新地で安心して働く！", "プライバシーを守る5つの方法"],
+  50: ["日給10万円も夢じゃない！", "給料システム徹底解説！", "未経験でも高収入な秘密を大公開"],
+  51: ["飛田新地のお仕事の流れ！", "未経験さんが知っておきたい", "「お仕事の一日の流れ」徹底解説"],
+  52: ["身バレ徹底ガード！", "飛田新地で安心して働く！", "プライバシー保護とお店のサポート"],
+  53: ["日払いOK！給料システム", "飛田新地の安心給与制度！", "未経験でも高収入が残る秘密とは？"],
+  54: ["初めてでも安心・安全！", "未経験さん向け1日の流れと", "不安を解消する安心ポイント"],
+  55: ["「もしかしてバレる？」", "飛田新地で安心して働く！", "身バレ防止の徹底安心ガイド"],
+  56: ["お給料システム徹底解説！", "未経験でも安心の高収入！", "全額日払いでしっかり残る秘訣"],
+  57: ["未経験者向け完全ガイド！", "安心してスタートできる！", "お仕事の流れと「体入」のすべて"],
+  58: ["カフェで気軽に相談できる！", "対面・LINEで相談OK！", "不安を全部解消する個別カウンセリング"],
+  59: ["完全無料！手ぶらでOK！", "お店で借りられるメイク道具＆", "ドレス・和装の充実サポート"],
+  60: ["通勤・アクセス抜群！", "天王寺・難波からアクセス快適！", "飛田新地のお仕事への通いやすさ"],
+  61: ["貯金スピード10倍計画！", "短期間で目標額を達成するための", "目標設定と資金計画シート"],
+  62: ["自分磨き・美容代手当！", "働くだけで綺麗になれる！", "美容サロン提携＆自分投資の極意"],
+  63: ["心穏やかに働く秘訣！", "お仕事後のリフレッシュ法と", "無理なく長く続けるメンタルケア"],
+  64: ["深夜タクシー代支給・送りあり！", "終電後も安全帰宅できる！", "夜シフトの女の子を守る送迎システム"],
+  65: ["SNS・身バレ対策完璧！", "インスタ・TikTokの鍵垢運用と", "お顔非公開の徹底安心ルール"],
+  66: ["地方出稼ぎ・短期集中スタイル！", "往復交通費全額支給＆快適寮で", "サクッと稼ぐ出張ワーク"],
+  67: ["完全自由シフト制の魅力！", "週1日・3時間〜勤務OK！", "ライフスタイルを崩さず高収入"],
+  68: ["大阪グルメ＆観光スポット！", "お仕事終わりに立ち寄りたい！", "天王寺・新世界・難波のおすすめ"],
+  69: ["季節のおすすめ着物スタイル！", "春夏秋冬で楽しむ料亭のお着物・", "和装コーディネート術"],
+  70: ["シフト管理アプリ活用術！", "学業・本業と両立する！", "賢いスケジュール帳の作り方"],
+  71: ["友達同士の応募大歓迎！", "1人じゃ不安なあなたへ！", "一緒にお店を選べる「友達ペア紹介」"],
+  72: ["自分へのご褒美習慣！", "目標達成ごとに自分を褒める！", "モチベーションUPのプチご褒美"],
+  73: ["夜の静かなプライベート時間！", "お仕事後の上質な睡眠＆", "おうち時間の心地よい過ごし方"],
+  74: ["ノーファンデでも美肌見え！", "接客で映えるスキンケア＆", "ツヤ肌づくり徹底講座"],
+  75: ["自己肯定感がアップする！", "飛田新地のお仕事で変わった！", "「私の自信と将来の夢」体験談"],
+  76: ["憧れの海外旅行・留学資金！", "短期間で目標額を貯めて", "海外へ羽ばたくキャストの資金活用術"],
+  77: ["お休み日の至福ケア！", "バスタイムで疲れをリセット！", "バスソルト＆泡風呂の癒やし習慣"],
+  78: ["カフェ巡り＆映えスイーツ！", "稼いだお金で休日を楽しむ！", "天王寺・心斎橋のおすすめカフェ"],
+  79: ["ほっと一息朝時間！", "出勤前や休日の朝を優雅に過ごす", "心地よいモーニングルーティン"],
+  80: ["季節のお花でお部屋を飾る！", "お部屋の雰囲気を明るくして", "運気を上げるプチインテリア術"],
+  81: ["銀行口座・手渡し徹底比較！", "日払い現金を安全に保管・", "管理する賢いお金の管理術"],
+  82: ["夜空を見上げてリセット！", "出勤後のナイトルーティンと", "心を落ち着かせる夜の過ごし方"],
+  83: ["料亭文化の奥深さを学ぶ！", "伝統と品格を感じる「和の所作」が", "自然と身につく理由"],
+  84: ["おうち時間を快適に！", "お仕事の疲れを癒やす！", "ルームウェア＆おうちリラクゼーション"],
+  85: ["手鏡を見るたび笑顔に！", "お仕事を通して自信がついた！", "「自分の雰囲気が好きになれた」秘密"],
+  86: ["思い出を形に残す写真旅！", "カメラや旅行趣味を楽しむ！", "現役キャストの休日ライフスタイル"],
+  87: ["アロマで心身リラックス！", "お仕事終わりのお部屋を満たす", "香りのリフレッシュ習慣"],
+  88: ["ふわふわパンケーキカフェ！", "休日に味わう自分への甘いご褒美！", "極上カフェタイムのススメ"],
+  89: ["和装の帯結び・リボンアレンジ！", "料亭で一目置かれる！", "上品で可愛い和装コーディネート"],
+  90: ["貯金箱がどんどん溜まる！", "半年で100万円貯めるための", "現実的なステップと節約術"],
+  91: ["ハーブティーでほっと一息！", "お仕事終わりに試したい！", "オーガニック温活リフレッシュ"],
+  92: ["スキンケア見直し術！", "毎日のメイク映えを叶える！", "透明感のある美肌のつくり方"],
+  93: ["ぬくもり溢れるお部屋づくり！", "ふんわり毛布と間接照明で", "最高の癒やし空間をつくるコツ"],
+  94: ["夢を叶える手帳術！", "目標額・欲しいものリストを書いて", "モチベーションをグングンUP"],
+  95: ["お酒不要！ノンアル接客術！", "乾杯シーンでも可愛く魅せる！", "お酒が飲めなくても安心の理由"],
+  96: ["足湯＆フットケアでリセット！", "一日頑張った足を優しく労わる！", "自宅でできる簡単リフレッシュ"],
+  97: ["星モチーフアクセサリー！", "首元でキラリと光る！", "シンプルジュエリーの魅力"],
+  98: ["悪質スカウト・反社を完全排除！", "SNS求人の罠と危険性！", "直営グループ応募が安心・安全な理由"],
+  99: ["悪質店舗の見極め方を伝授！", "日給保証の嘘・雑費天引きなど", "要注意店舗の3大特徴を徹底解説"],
+  100: ["シンママ・子育て支援完備！", "提携託児所＆短時間シフトで", "ママさんが安心して高収入を得る方法"]
+};
+
+// Fallback split function in case of unexpected articles
+function getArticleLines(article: Article): string[] {
+  const numId = typeof article.id === 'number' ? article.id : parseInt(String(article.id).replace(/\D/g, ''), 10) || 1;
+  if (ARTICLE_CARD_LINES[numId]) {
+    return ARTICLE_CARD_LINES[numId];
   }
 
-  const bracketMatch = title.match(/^(【[^】]+】)(.*)$/);
-
-  if (bracketMatch) {
-    const tag = stripEmojis(bracketMatch[1]);
-    let rest = stripEmojis(bracketMatch[2].trim());
-    if (rest.length === 0) {
-      return { tag, bodyLines: [] };
+  let t = stripEmojis(article.title.trim());
+  for (const p of ['【飛田新地】', '【飛田新地 求人】', '【飛田新地求人】']) {
+    if (t.startsWith(p)) {
+      t = t.slice(p.length).trim();
     }
-
-    if (rest.length <= 22) {
-      return { tag, bodyLines: [rest] };
-    }
-
-    // Try splitting at Japanese punctuation
-    const puncMatch = rest.search(/[！!・、\s]/);
-    if (puncMatch >= 7 && puncMatch <= 23) {
-      const line1 = rest.slice(0, puncMatch + 1).trim();
-      const line2 = rest.slice(puncMatch + 1).trim();
-      if (line2.length <= 24) {
-        return { tag, bodyLines: [line1, line2] };
-      }
-      const half = Math.ceil(line2.length / 2);
-      return { tag, bodyLines: [line1, line2.slice(0, half), line2.slice(half)] };
-    }
-
-    const half = Math.ceil(rest.length / 2);
-    if (half <= 24) {
-      return { tag, bodyLines: [rest.slice(0, half), rest.slice(half)] };
-    }
-    const third = Math.ceil(rest.length / 3);
-    return { tag, bodyLines: [rest.slice(0, third), rest.slice(third, third * 2), rest.slice(third * 2)] };
   }
 
-  // Split at first exclamation if present
-  const firstExcl = title.search(/[！!]/);
-  if (firstExcl >= 4 && firstExcl <= 22) {
-    const tag = title.slice(0, firstExcl + 1).trim();
-    const rest = title.slice(firstExcl + 1).trim();
-    if (rest.length <= 23) {
-      return { tag, bodyLines: [rest] };
-    }
-    const puncMatch = rest.search(/[！!・、\s]/);
-    if (puncMatch >= 7 && puncMatch <= 23) {
-      const l1 = rest.slice(0, puncMatch + 1).trim();
-      const l2 = rest.slice(puncMatch + 1).trim();
-      return { tag, bodyLines: [l1, l2] };
-    }
-    const half = Math.ceil(rest.length / 2);
-    return { tag, bodyLines: [rest.slice(0, half), rest.slice(half)] };
+  if (t.length <= 18) {
+    return [t];
   }
-
-  // Without bracket or exclamation
-  if (title.length <= 20) {
-    return { tag: null, bodyLines: [title] };
+  if (t.length <= 36) {
+    const half = Math.ceil(t.length / 2);
+    return [t.slice(0, half), t.slice(half)];
   }
-  if (title.length <= 42) {
-    const puncMatch = title.search(/[！!・、\s]/);
-    if (puncMatch >= 8 && puncMatch <= 24) {
-      return { tag: null, bodyLines: [title.slice(0, puncMatch + 1), title.slice(puncMatch + 1)] };
-    }
-    const half = Math.ceil(title.length / 2);
-    return { tag: null, bodyLines: [title.slice(0, half), title.slice(half)] };
-  }
-  const third = Math.ceil(title.length / 3);
-  return { tag: null, bodyLines: [title.slice(0, third), title.slice(third, third * 2), title.slice(third * 2)] };
+  const third = Math.ceil(t.length / 3);
+  return [t.slice(0, third), t.slice(third, third * 2), t.slice(third * 2)];
 }
 
-// Color theme system: 記事ごとに枠やバッジの色合いを変えるバリエーションパレット
+// Color theme system
 interface ColorTheme {
   name: string;
   stroke: string;
@@ -277,40 +330,49 @@ function selectBackgroundImage(article: Article): string {
 
 // Generate the cute card SVG
 function createCuteSvg(article: Article): string {
-  const { tag, bodyLines } = wrapTitleToLines(article.title);
-
+  const lines = getArticleLines(article);
   const numId = typeof article.id === 'number' ? article.id : parseInt(String(article.id).replace(/\D/g, ''), 10) || 1;
   const theme = COLOR_THEMES[numId % COLOR_THEMES.length];
 
-  // Calculate layout coordinates
-  let contentY = 224;
-  let tagSvg = '';
-  
-  if (tag) {
-    const escapedTag = escapeXml(tag);
-    tagSvg = `
-      <text x="140" y="${contentY}" font-family="Noto Sans CJK JP, sans-serif" font-size="44" font-weight="bold" fill="${theme.tagColor}" letter-spacing="1.5px">
-        ${escapedTag}
-      </text>
-    `;
-    contentY += 68;
+  const lineCount = lines.length;
+  // Dynamic font size and spacing
+  let startY = 230;
+  let lineSpacing = 64;
+  let line1FontSize = 38;
+  let bodyFontSize = 36;
+
+  if (lineCount === 3) {
+    startY = 225;
+    lineSpacing = 62;
+    line1FontSize = 38;
+    bodyFontSize = 36;
+  } else if (lineCount === 2) {
+    startY = 245;
+    lineSpacing = 72;
+    line1FontSize = 40;
+    bodyFontSize = 38;
   }
 
-  const fontSize = bodyLines.length > 2 ? 38 : 42;
-  const lineSpacing = bodyLines.length > 2 ? 58 : 64;
-
-  const linesSvg = bodyLines
+  const linesSvg = lines
     .map((line, idx) => {
-      const y = contentY + idx * lineSpacing;
+      const y = startY + idx * lineSpacing;
+      // First line gets the highlighted theme tagColor with extra bold weight
+      if (idx === 0) {
+        return `
+          <text x="140" y="${y}" font-family="Noto Sans CJK JP, sans-serif" font-size="${line1FontSize}" font-weight="900" fill="${theme.tagColor}" letter-spacing="1px">
+            ${escapeXml(line)}
+          </text>
+        `;
+      }
       return `
-        <text x="140" y="${y}" font-family="Noto Sans CJK JP, sans-serif" font-size="${fontSize}" font-weight="bold" fill="#25161d" letter-spacing="0.8px">
+        <text x="140" y="${y}" font-family="Noto Sans CJK JP, sans-serif" font-size="${bodyFontSize}" font-weight="700" fill="#25161d" letter-spacing="0.5px">
           ${escapeXml(line)}
         </text>
       `;
     })
     .join('\n');
 
-  const bottomY = Math.min(contentY + bodyLines.length * lineSpacing + 20, 505);
+  const bottomY = Math.min(startY + lineCount * lineSpacing + 22, 510);
 
   return `
   <svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
@@ -336,28 +398,27 @@ function createCuteSvg(article: Article): string {
       <rect x="75" y="60" width="1050" height="510" rx="32" fill="rgba(255, 255, 255, 0.96)" stroke="${theme.stroke}" stroke-width="${theme.strokeWidth}" />
     </g>
 
-    <!-- Top Badge: 飛田新地 求人 (大文字・絵文字完全削除・高視認性) -->
+    <!-- Top Badge: 飛田新地 (大文字・高視認性・文字切れゼロ) -->
     <g transform="translate(135, 95)">
-      <rect x="0" y="0" width="360" height="68" rx="34" fill="url(#badgeGrad_${numId})" />
-      <text x="180" y="47" font-family="Noto Sans CJK JP, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3.5px">飛田新地 求人</text>
+      <rect x="0" y="0" width="280" height="64" rx="32" fill="url(#badgeGrad_${numId})" />
+      <text x="140" y="44" font-family="Noto Sans CJK JP, sans-serif" font-size="32" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3.5px">飛田新地</text>
     </g>
 
-    <!-- Title: ONLY 飛田新地 + タイトル (絵文字なし) -->
-    ${tagSvg}
+    <!-- Title Lines (最大18文字/行・文字切れ完全防止) -->
     ${linesSvg}
 
     <!-- Decorative accent line at bottom of card -->
     <g transform="translate(140, ${bottomY})">
       <circle cx="0" cy="0" r="4.5" fill="${theme.accentColor}" />
-      <line x1="14" y1="0" x2="200" y2="0" stroke="${theme.accentColor}" stroke-width="3" stroke-linecap="round" />
-      <circle cx="214" cy="0" r="4.5" fill="${theme.accentColor}" />
+      <line x1="14" y1="0" x2="220" y2="0" stroke="${theme.accentColor}" stroke-width="3" stroke-linecap="round" />
+      <circle cx="234" cy="0" r="4.5" fill="${theme.accentColor}" />
     </g>
   </svg>
   `;
 }
 
 async function main() {
-  console.log('🌸 Starting generation of cute, high-readability cards (ONLY 飛田新地 + タイトル)...');
+  console.log('🌸 Starting generation of cute, high-readability cards (全100記事の文字切れ完全修正)...');
   
   const articlesPath = path.join(rootDir, 'data', 'blogArticles.json');
   const articles: Article[] = JSON.parse(fs.readFileSync(articlesPath, 'utf-8'));
@@ -379,7 +440,7 @@ async function main() {
       .resize(1200, 630, { fit: 'cover', position: 'center' })
       .toBuffer();
 
-    // 2. Generate cute SVG overlay
+    // 2. Generate cute SVG overlay with strict <= 18 char lines
     const svgString = createCuteSvg(article);
     const svgBuffer = Buffer.from(svgString);
 
@@ -399,7 +460,7 @@ async function main() {
     // 5. Ensure article eyeCatch points to the new card
     article.eyeCatch = `/images/${cardFileNameV2}`;
     count++;
-    if (count % 10 === 0) {
+    if (count % 20 === 0) {
       console.log(`Generated ${count}/100 cards...`);
     }
   }
@@ -417,7 +478,7 @@ async function main() {
   }));
   fs.writeFileSync(funcArticlesPath, JSON.stringify(simplified, null, 2), 'utf-8');
 
-  console.log(`✨ Successfully generated all ${count} cute cards with 飛田新地 + タイトル only!`);
+  console.log(`✨ Successfully generated all ${count} cute cards with 0 clipping and perfect 3-line layout!`);
 }
 
 main().catch(err => {

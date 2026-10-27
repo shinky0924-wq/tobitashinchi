@@ -20,7 +20,7 @@ const normalizeUrl = (originalUrl?: string): string => {
   }
   const filename = trimmed.split('/').pop()?.split('?')[0] || '';
   if (!filename) return DEFAULT_FALLBACK_IMAGE;
-  return `/images/${filename}?v=20261025_fixed`;
+  return `/images/${filename}?v=20261027_nocut`;
 };
 
 export const ArticleCardImage: FC<ArticleCardImageProps> = memo(({

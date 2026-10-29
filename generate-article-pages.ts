@@ -167,13 +167,25 @@ async function main() {
     const articleTitle = `${article.title} | 飛田新地求人`;
     const articleDesc = article.summary || `${article.title}についての詳しい解説記事です。`;
 
-    const articleHtml = injectMetaIntoHtml(baseHtml, {
+    let articleHtml = injectMetaIntoHtml(baseHtml, {
       title: articleTitle,
       description: articleDesc,
       imageUrl: fullImageUrl,
       url: articleUrl,
       type: 'article'
     });
+
+    // Add static crawler/fallback direct LINE CTA
+    const staticLineBlock = `
+    <noscript>
+      <div style="max-width:680px;margin:30px auto;padding:24px;background:#fff5f7;border:2px solid #ffccd5;border-radius:20px;text-align:center;font-family:sans-serif;">
+        <h3 style="color:#2c1a1e;margin-bottom:8px;font-size:18px;">飛田新地求人・LINE公式アカウント（24時間受付中）</h3>
+        <p style="color:#5e474c;font-size:14px;margin-bottom:16px;">体験入店・お給料・シフト・身バレ対策など、女性スタッフが丁寧にお答えします。</p>
+        <a href="https://line.me/R/ti/p/@600bgcxd" style="display:inline-block;background:#06c755;color:#ffffff;font-weight:bold;padding:12px 28px;border-radius:12px;text-decoration:none;font-size:16px;">LINEで直接相談・応募する</a>
+      </div>
+    </noscript>
+    </body>`;
+    articleHtml = articleHtml.replace('</body>', staticLineBlock);
 
     // Write both /blog/slug/index.html AND /blog/slug.html
     // This allows Cloudflare Pages to serve both /blog/slug and /blog/slug/ without any 308 redirect

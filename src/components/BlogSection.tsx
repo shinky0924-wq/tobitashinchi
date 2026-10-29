@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BLOG_CATEGORIES, BlogArticle, getValidArticleEyeCatch } from '../blogData';
+import { getSmartLineUrl, openSmartLine, LINE_OFFICIAL_URL } from '../data';
 import { ArticleCardImage } from './ArticleCardImage';
 import { BookOpen, Calendar, Clock, Search, ArrowLeft, Tag, MessageCircle, ChevronRight, ChevronLeft, Sparkles, Send, ShieldCheck, HeartHandshake } from 'lucide-react';
 
@@ -551,7 +552,30 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
                       </div>
                     );
                   case 'cta':
-                    return null;
+                    return (
+                      <div key={idx} className="my-10 bg-gradient-to-br from-rose-50/90 via-pink-50/60 to-white border-2 border-rose-200/90 rounded-3xl p-6 sm:p-8 text-center shadow-xs">
+                        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#06c755]/10 text-[#05a044] rounded-full text-xs font-bold mb-3">
+                          <MessageCircle size={14} className="fill-[#06c755] text-[#06c755]" />
+                          LINE公式アカウント・24時間受付中
+                        </div>
+                        <h4 className="text-lg sm:text-xl font-bold text-[#2c1a1e] mb-2 leading-snug">
+                          不安なことや疑問はLINEで何でもお気軽に！
+                        </h4>
+                        <p className="text-xs sm:text-sm text-on-surface-variant max-w-md mx-auto mb-5 leading-relaxed">
+                          「身バレが心配」「お給料の相場」「体験入店の持ち物」など、女性スタッフが1対1で優しくお答えします。
+                        </p>
+                        <a
+                          href={getSmartLineUrl()}
+                          onClick={openSmartLine}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-[#06c755] hover:bg-[#05b34c] active:scale-[0.98] text-white font-bold text-base rounded-2xl shadow-md shadow-[#06c755]/25 hover:shadow-lg transition-all cursor-pointer group"
+                        >
+                          <MessageCircle className="fill-white text-white w-5 h-5 shrink-0 group-hover:scale-110 transition-transform" />
+                          <span>LINEで今すぐ相談・質問する</span>
+                        </a>
+                      </div>
+                    );
                   default:
                     return null;
                 }
@@ -578,25 +602,35 @@ export default function BlogSection({ articles, selectedSlug, onSelectSlug, onCt
               </button>
             </div>
 
-            {/* Banner block */}
-            <div className="mt-16 bg-[#2c1a1e] text-white rounded-4xl p-8 text-center relative overflow-hidden shadow-lg">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary opacity-20 blur-3xl rounded-full" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-500 opacity-25 blur-3xl rounded-full" />
-              <h3 className="text-xl md:text-2xl font-bold tracking-tight mb-2">
-                最短本日スタート！1日体験入店随時受付中
+            {/* Fixed Permanent Direct LINE Banner at the bottom of the article */}
+            <div className="mt-14 bg-gradient-to-br from-[#2c1a1e] via-[#3a2027] to-[#1f1215] text-white rounded-3xl p-6 sm:p-8 text-center relative overflow-hidden shadow-xl border border-rose-900/30">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-secondary/20 blur-3xl rounded-full pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-pink-500/20 blur-3xl rounded-full pointer-events-none" />
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-white/10 text-pink-200 rounded-full text-xs font-bold mb-3 backdrop-blur-xs">
+                <HeartHandshake size={14} />
+                最短本日スタート！1日体験入店受付中
+              </span>
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">
+                まずはLINEで気軽に相談してみませんか？
               </h3>
-              <p className="text-xs md:text-sm text-pink-200/90 max-w-lg mx-auto leading-relaxed mb-6">
-                体験入店は「面接＋見学＋1日お仕事＋その日にお給料全額手渡し」がすべて1日で完了する安心コースです。合わないと感じたらその場でやめても全然OK！
+              <p className="text-xs sm:text-sm text-pink-100/80 max-w-lg mx-auto leading-relaxed mb-6">
+                体験入店は「面接＋見学＋1日お仕事＋その場でお給料全額手渡し」がすべて1日で完了する安心コースです。合わないと感じたらその場でやめても全然OK！
               </p>
-              <div className="flex justify-center items-center">
-                <button
-                  onClick={() => handleCtaInArticle(currentArticle!.title)}
-                  className="w-full sm:w-auto max-w-md bg-[#06c755] hover:bg-[#05b04b] text-white px-12 py-4 rounded-2xl font-bold text-base shadow-lg shadow-[#06c755]/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+                <a
+                  href={getSmartLineUrl()}
+                  onClick={openSmartLine}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto min-w-[280px] bg-[#06c755] hover:bg-[#05b34c] active:scale-[0.98] text-white px-8 py-4 rounded-2xl font-bold text-base shadow-lg shadow-[#06c755]/30 transition-all cursor-pointer flex items-center justify-center gap-2.5 group"
                 >
-                  <MessageCircle size={18} />
-                  LINEでお問い合わせ
-                </button>
+                  <MessageCircle className="fill-white text-white w-5 h-5 shrink-0 group-hover:scale-110 transition-transform" />
+                  <span>公式LINEで問い合わせる</span>
+                </a>
               </div>
+              <p className="text-[11px] text-pink-200/60 mt-3 font-mono">
+                LINE URL: {LINE_OFFICIAL_URL}
+              </p>
             </div>
           </motion.div>
         )}

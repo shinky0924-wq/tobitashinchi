@@ -402,7 +402,7 @@ export default function App() {
       />
 
       {/* Bottom Sticky LINE Consultation Button */}
-      {currentTab === 'recruit' && (
+      {(currentTab === 'recruit' || currentTab === 'blog') && (
         <FixedBottomCta />
       )}
     </div>

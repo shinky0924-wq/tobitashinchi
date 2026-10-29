@@ -418,8 +418,20 @@ function createCuteSvg(article: Article): string {
 }
 
 async function main() {
-  console.log('🌸 Starting generation of cute, high-readability cards (全100記事の文字切れ完全修正)...');
+  console.log('🌸 Starting generation of cute, high-readability cards with original Noto Sans CJK JP font...');
   
+  // Ensure genuine Japanese Noto Sans CJK JP fonts are installed in fontconfig
+  const fontDir = '/usr/share/fonts/opentype/noto';
+  const localBoldFont = path.join(rootDir, 'fonts', 'NotoSansCJKjp-Bold.otf');
+  const localRegFont = path.join(rootDir, 'fonts', 'NotoSansCJKjp-Regular.otf');
+  if (fs.existsSync(localBoldFont)) {
+    fs.mkdirSync(fontDir, { recursive: true });
+    if (!fs.existsSync(path.join(fontDir, 'NotoSansCJKjp-Bold.otf'))) {
+      fs.copyFileSync(localBoldFont, path.join(fontDir, 'NotoSansCJKjp-Bold.otf'));
+      fs.copyFileSync(localRegFont, path.join(fontDir, 'NotoSansCJKjp-Regular.otf'));
+    }
+  }
+
   const articlesPath = path.join(rootDir, 'data', 'blogArticles.json');
   const articles: Article[] = JSON.parse(fs.readFileSync(articlesPath, 'utf-8'));
 

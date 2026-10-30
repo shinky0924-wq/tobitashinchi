@@ -1,28 +1,43 @@
 const fs = require('fs');
 const path = require('path');
 
-const srcDir = path.join(process.cwd(), 'src', 'assets', 'images');
-const pubImgDir = path.join(process.cwd(), 'public', 'images');
-const pubAssetsImgDir = path.join(process.cwd(), 'public', 'assets', 'images');
+const rootDir = process.cwd();
+const publicImagesDir = path.join(rootDir, 'public', 'images');
+const srcAssetsImagesDir = path.join(rootDir, 'src', 'assets', 'images');
 
-[pubImgDir, pubAssetsImgDir].forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-});
+if (!fs.existsSync(publicImagesDir)) {
+  fs.mkdirSync(publicImagesDir, { recursive: true });
+}
+if (!fs.existsSync(srcAssetsImagesDir)) {
+  fs.mkdirSync(srcAssetsImagesDir, { recursive: true });
+}
 
-if (fs.existsSync(srcDir)) {
-  const files = fs.readdirSync(srcDir);
-  let copied = 0;
-  for (const file of files) {
-    const srcPath = path.join(srcDir, file);
-    if (fs.statSync(srcPath).isFile()) {
-      fs.copyFileSync(srcPath, path.join(pubImgDir, file));
-      fs.copyFileSync(srcPath, path.join(pubAssetsImgDir, file));
-      copied++;
+let count = 0;
+
+// Copy from public/images to src/assets/images if missing
+if (fs.existsSync(publicImagesDir)) {
+  const files = fs.readdirSync(publicImagesDir);
+  for (const f of files) {
+    const src = path.join(publicImagesDir, f);
+    const dest = path.join(srcAssetsImagesDir, f);
+    if (fs.statSync(src).isFile() && !fs.existsSync(dest)) {
+      fs.copyFileSync(src, dest);
+      count++;
     }
   }
-  console.log(`[Prepare Images] Copied ${copied} images to public directories.`);
-} else {
-  console.log('[Prepare Images] No src/assets/images directory found, skipping.');
 }
+
+// Copy from src/assets/images to public/images if missing
+if (fs.existsSync(srcAssetsImagesDir)) {
+  const files = fs.readdirSync(srcAssetsImagesDir);
+  for (const f of files) {
+    const src = path.join(srcAssetsImagesDir, f);
+    const dest = path.join(publicImagesDir, f);
+    if (fs.statSync(src).isFile() && !fs.existsSync(dest)) {
+      fs.copyFileSync(src, dest);
+      count++;
+    }
+  }
+}
+
+console.log(`[Prepare Images] Synced images between public/images and src/assets/images (${count} copied).`);
